@@ -1,275 +1,232 @@
 # Ninja API Explorer
 
-یک ابزار قدرتمند و مدرن برای کاوش و تست REST API های WordPress با رابط کاربری شبیه به Swagger.
+A powerful WordPress plugin that provides a Swagger-like interface for exploring and testing WordPress REST APIs. Built with clean MVC architecture and modern design principles.
 
-## ویژگی‌ها
+## 🚀 Features
 
-### 🔍 کاوش API
-- **نمایش خودکار تمام Route ها**: به صورت داینامیک تمام REST API route های ثبت شده در WordPress را نمایش می‌دهد
-- **گروه‌بندی بر اساس Namespace**: Route ها بر اساس namespace هایشان گروه‌بندی شده‌اند
-- **فیلترهای پیشرفته**: امکان فیلتر بر اساس namespace، method، public/private routes و جستجو
-- **نمایش جزئیات**: اطلاعات کامل هر route شامل parameters، methods و example URLs
+### Core Functionality
+- **Dynamic Route Discovery**: Automatically discovers all registered WordPress REST API routes
+- **Interactive API Testing**: Built-in endpoint tester with support for all HTTP methods
+- **Route Documentation**: Detailed information about each endpoint including parameters and examples
+- **Real-time Filtering**: Filter routes by namespace, method, and public/private status
+- **Smart Search**: Search through route paths and descriptions
+- **Copy to Clipboard**: Easy URL copying for external testing
 
-### 🧪 تست API
-- **تست مستقیم**: امکان تست هر endpoint از طریق رابط کاربری
-- **پشتیبانی از تمام HTTP Methods**: GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD
-- **مدیریت Headers**: اضافه/حذف headers سفارشی
-- **Request Body**: پشتیبانی کامل از JSON body برای POST/PUT/PATCH
-- **نمایش Response**: نمایش کامل response شامل status code، headers و body
+### User Interface
+- **Clean Light Mode Design**: Modern, professional interface
+- **Tabbed Navigation**: Organized view with All Routes, Grouped Routes, and API Tester tabs
+- **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
+- **WordPress Admin Integration**: Seamlessly integrated into WordPress admin panel
+- **Collapsible Namespaces**: Organized route grouping with expand/collapse functionality
 
-### 📊 آمار و گزارش
-- **آمار کلی**: تعداد routes، endpoints، namespaces و غیره
-- **تاریخچه تست‌ها**: ذخیره و نمایش تمام درخواست‌های تست شده
-- **آمار عملکرد**: زمان پاسخ، نرخ موفقیت و توزیع کدهای وضعیت
-- **Export/Import**: امکان export کردن تنظیمات و import کردن آنها
+### Developer Features
+- **MVC Architecture**: Clean separation of concerns with Models, Views, and Controllers
+- **OpenAPI Specification**: Generates OpenAPI 3.0 specification for API documentation
+- **Request Logging**: Logs API test requests for debugging and analysis
+- **Extensible Design**: Easy to extend with custom functionality
+- **Performance Optimized**: Efficient code with minimal resource usage
 
-### 🎨 رابط کاربری مدرن
-- **طراحی Responsive**: سازگار با تمام اندازه‌های صفحه
-- **رابط کاربری شبیه Swagger**: تجربه کاربری آشنای Swagger UI
-- **Dark Mode Support**: پشتیبانی از حالت تاریک
-- **انیمیشن‌های نرم**: تجربه کاربری روان و جذاب
+## 📋 Requirements
 
-## نصب
+- **WordPress**: 5.0 or higher
+- **PHP**: 7.4 or higher
+- **Browser**: Modern browser with JavaScript enabled
+- **Permissions**: Administrator access to WordPress admin
 
-### روش 1: از طریق WordPress Admin
-1. فایل‌های پلاگین را در پوشه `/wp-content/plugins/ninja-api-explorer/` کپی کنید
-2. از پنل مدیریت WordPress، پلاگین را فعال کنید
-3. به منوی "API Explorer" در پنل مدیریت بروید
+## 🔧 Installation
 
-### روش 2: از طریق Composer (اختیاری)
-```bash
-composer require your-username/ninja-api-explorer
-```
+### Manual Installation
 
-## استفاده
+1. Download the plugin files
+2. Upload the `ninja-api` folder to `/wp-content/plugins/` directory
+3. Activate the plugin through the 'Plugins' menu in WordPress
+4. Navigate to 'API Explorer' in the WordPress admin menu
 
-### صفحه اصلی
-- **نمایش تمام Routes**: لیست کامل تمام REST API route های موجود
-- **فیلتر و جستجو**: پیدا کردن route های مورد نظر
-- **تست سریع**: کلیک روی "Test" برای تست فوری endpoint
+### From WordPress Admin
 
-### تست API
-1. روی دکمه "Test" کنار هر route کلیک کنید
-2. URL، method، headers و body را تنظیم کنید
-3. روی "Send Request" کلیک کنید
-4. نتیجه را مشاهده کنید
+1. Go to Plugins → Add New
+2. Search for "Ninja API Explorer"
+3. Click "Install Now" and then "Activate"
+4. Access the plugin from the admin menu
 
-### تنظیمات
-- **فعال/غیرفعال کردن تست API**
-- **تنظیم timeout پیش‌فرض**
-- **نمایش/مخفی کردن private routes**
-- **تنظیم مدت cache**
-- **مدیریت logging**
+## 🎯 Usage
 
-## معماری
+### Accessing the Plugin
 
-### ساختار MVC
-پلاگین از معماری MVC استفاده می‌کند:
+After activation, you'll find "API Explorer" in your WordPress admin menu. The plugin provides three main tabs:
+
+1. **All Routes**: View all registered API routes with filtering options
+2. **Grouped Routes**: Routes organized by namespace for better navigation
+3. **API Tester**: Built-in tool for testing API endpoints
+
+### Exploring Routes
+
+- **Browse Routes**: Navigate through all available WordPress REST API routes
+- **Filter Options**: Use the filter bar to narrow down results by namespace, HTTP method, or public status
+- **Search**: Type in the search box to find specific routes
+- **Route Details**: Click "Details" to see comprehensive information about any route
+
+### Testing APIs
+
+1. Navigate to the "API Tester" tab
+2. Enter the endpoint URL
+3. Select the HTTP method (GET, POST, PUT, PATCH, DELETE, etc.)
+4. Add request body if needed (for POST/PUT/PATCH requests)
+5. Click "Test Endpoint" to execute the request
+6. View the response with status code, response time, and body
+
+### Advanced Features
+
+- **Copy URLs**: Click "Copy URL" to copy endpoint URLs for external testing
+- **Namespace Grouping**: View routes organized by WordPress namespaces (wp/v2, etc.)
+- **Request Logging**: All test requests are logged for future reference
+- **OpenAPI Export**: Generate OpenAPI specification for external documentation tools
+
+## 🏗️ Architecture
+
+### MVC Structure
 
 ```
 App/
-├── Controllers/          # کنترلرها
-│   ├── BaseController.php
-│   ├── AdminController.php
-│   └── ApiTestController.php
-├── Models/              # مدل‌ها
-│   ├── ApiRouteModel.php
-│   └── ApiEndpointModel.php
-├── Views/               # View ها
-│   └── admin/
-│       ├── main-page.php
-│       ├── settings-page.php
-│       └── documentation-page.php
-├── Services/            # سرویس‌ها
-│   └── ApiService.php
-└── Helpers/             # Helper ها
-    ├── RouteHelper.php
-    └── ViewHelper.php
+├── Controllers/
+│   ├── BaseController.php      # Base controller class
+│   ├── AdminController.php     # Admin panel controller
+│   └── ApiTestController.php   # API testing controller
+├── Models/
+│   ├── ApiRouteModel.php       # Route data model
+│   └── ApiEndpointModel.php    # Endpoint data model
+├── Services/
+│   └── ApiService.php          # Core API service
+├── Helpers/
+│   ├── RouteHelper.php         # Route utility functions
+│   └── ViewHelper.php          # View rendering helper
+└── Views/
+    └── admin/
+        ├── main-page.php       # Main interface
+        ├── settings-page.php   # Settings page
+        └── documentation-page.php # Documentation
 ```
 
-### نام‌گذاری PascalCase
-تمام کلاس‌ها، متدها و متغیرها از PascalCase استفاده می‌کنند:
-```php
-class NinjaApiExplorer
-{
-    public function GetInstance()
-    {
-        // ...
-    }
-}
-```
+### Key Components
 
-## API Reference
+- **ApiService**: Handles WordPress REST API interaction and route discovery
+- **ViewHelper**: Manages view rendering and template system
+- **RouteHelper**: Provides utility functions for route processing
+- **AdminController**: Manages admin interface and user interactions
+- **ApiTestController**: Handles API testing functionality
 
-### کلاس‌های اصلی
+## 🎨 Customization
 
-#### `NinjaApiExplorer`
-کلاس اصلی پلاگین که به عنوان Bootstrap عمل می‌کند.
+### Styling
 
-#### `ApiService`
-سرویس اصلی برای کار با REST API ها:
-- `GetAllRegisteredRoutes()`: دریافت تمام route ها
-- `GetRouteDetails($routeName)`: دریافت جزئیات route
-- `TestEndpoint($url, $method, $headers, $body, $timeout)`: تست endpoint
+The plugin uses clean CSS that can be easily customized:
 
-#### `ApiRouteModel`
-مدل برای مدیریت route ها:
-- `GetRouteName()`: دریافت نام route
-- `GetMethods()`: دریافت methods موجود
-- `IsPublic()`: بررسی عمومی بودن route
-- `GenerateTestData($method)`: تولید داده‌های تست
+- Main styles: `assets/css/admin.css`
+- Responsive design included
+- WordPress admin theme integration
+- Customizable color scheme
 
-### Hook ها
+### Extending Functionality
 
-#### Actions
-- `ninja_api_explorer_before_test`: قبل از تست API
-- `ninja_api_explorer_after_test`: بعد از تست API
-- `ninja_api_explorer_route_display`: هنگام نمایش route
+The plugin is designed to be extensible:
 
-#### Filters
-- `ninja_api_explorer_route_data`: فیلتر داده‌های route
-- `ninja_api_explorer_test_response`: فیلتر response تست
-- `ninja_api_explorer_settings`: فیلتر تنظیمات
+1. **Custom Controllers**: Extend `BaseController` for new functionality
+2. **Additional Services**: Add new service classes for extended features
+3. **Custom Views**: Create new view templates for additional pages
+4. **Hook Integration**: Use WordPress hooks for custom integrations
 
-## توسعه
+## 🔒 Security
 
-### اضافه کردن Route جدید
-```php
-add_action('rest_api_init', function() {
-    register_rest_route('my-plugin/v1', '/endpoint', array(
-        'methods' => 'GET',
-        'callback' => 'my_callback_function',
-        'permission_callback' => '__return_true'
-    ));
-});
-```
+- **Nonce Verification**: All AJAX requests use WordPress nonces
+- **Permission Checks**: Administrator-level access required
+- **Input Sanitization**: All user inputs are properly sanitized
+- **Output Escaping**: All outputs are properly escaped
+- **Direct Access Protection**: All files include access protection
 
-### اضافه کردن Hook سفارشی
-```php
-// در پلاگین خود
-add_action('ninja_api_explorer_before_test', function($url, $method) {
-    // کد سفارشی شما
-}, 10, 2);
-```
+## 🐛 Troubleshooting
 
-### توسعه Controller جدید
-```php
-class MyCustomController extends BaseController
-{
-    public function MyCustomMethod()
-    {
-        // منطق سفارشی شما
-    }
-}
-```
+### Common Issues
 
-## تنظیمات
+**Plugin not showing in admin menu:**
+- Ensure you have administrator privileges
+- Check if the plugin is properly activated
+- Verify WordPress version compatibility
 
-### تنظیمات پیش‌فرض
-```php
-$default_settings = [
-    'enable_api_testing' => true,
-    'default_timeout' => 30,
-    'show_private_routes' => false,
-    'cache_duration' => 3600,
-    'enable_logging' => false,
-    'log_retention_days' => 30
-];
-```
+**Routes not displaying:**
+- Check if WordPress REST API is enabled
+- Verify that routes are properly registered
+- Check browser console for JavaScript errors
 
-### فیلتر تنظیمات
-```php
-add_filter('ninja_api_explorer_settings', function($settings) {
-    $settings['my_custom_setting'] = 'my_value';
-    return $settings;
-});
-```
-
-## امنیت
-
-### اعتبارسنجی
-- تمام ورودی‌ها اعتبارسنجی و پاک‌سازی می‌شوند
-- استفاده از WordPress nonce برای امنیت
-- بررسی مجوزهای کاربر
-
-### محدودیت دسترسی
-- فقط کاربران با مجوز `manage_options` می‌توانند از پلاگین استفاده کنند
-- امکان محدود کردن دسترسی بر اساس IP
-- Rate limiting برای جلوگیری از سوءاستفاده
-
-## بهینه‌سازی
-
-### Cache
-- Cache کردن route ها برای بهبود عملکرد
-- Cache کردن آمار و گزارش‌ها
-- امکان تنظیم مدت cache
-
-### Database
-- استفاده از جداول سفارشی برای logging
-- Index های بهینه برای جستجوی سریع
-- پاکسازی خودکار log های قدیمی
-
-## عیب‌یابی
+**API tests failing:**
+- Verify the endpoint URL is correct
+- Check if the endpoint requires authentication
+- Ensure the request method matches the endpoint requirements
 
 ### Debug Mode
-برای فعال کردن debug mode:
+
+Enable WordPress debug mode to see detailed error messages:
+
 ```php
-// wp-config.php
 define('WP_DEBUG', true);
 define('WP_DEBUG_LOG', true);
 ```
 
-### Log Files
-Log های پلاگین در فایل `/wp-content/debug.log` ذخیره می‌شوند.
+## 🤝 Contributing
 
-### مشکلات رایج
-1. **Route ها نمایش داده نمی‌شوند**: بررسی کنید که REST API فعال باشد
-2. **تست API کار نمی‌کند**: بررسی مجوزهای کاربر و تنظیمات امنیتی
-3. **خطای 404**: بررسی URL و وجود route
+We welcome contributions from the community! Here's how you can help:
 
-## مشارکت
+### Ways to Contribute
 
-مشارکت‌های شما خوشامد است! لطفاً:
+1. **Bug Reports**: Report issues with detailed information
+2. **Feature Requests**: Suggest new features or improvements
+3. **Code Contributions**: Submit pull requests with fixes or enhancements
+4. **Documentation**: Help improve documentation and examples
+5. **Testing**: Test the plugin on different WordPress setups
 
-1. Fork کنید
-2. شاخه جدید بسازید (`git checkout -b feature/amazing-feature`)
-3. تغییرات را commit کنید (`git commit -m 'Add amazing feature'`)
-4. Push کنید (`git push origin feature/amazing-feature`)
-5. Pull Request ایجاد کنید
+### Development Setup
 
-### راهنمای مشارکت
-- از PascalCase برای نام‌گذاری استفاده کنید
-- کد خود را کامنت کنید
-- تست‌های واحد بنویسید
-- از WordPress Coding Standards پیروی کنید
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature-name`
+3. Make your changes following the existing code style
+4. Test your changes thoroughly
+5. Submit a pull request with a clear description
 
-## مجوز
+### Code Standards
 
-این پلاگین تحت مجوز GPL v2 یا بالاتر منتشر شده است.
+- Follow WordPress Coding Standards
+- Use PascalCase for class names
+- Maintain MVC architecture
+- Include proper documentation
+- Write clean, readable code
 
-## پشتیبانی
+## 📄 License
 
-- **GitHub Issues**: [گزارش باگ یا درخواست ویژگی](https://github.com/your-username/ninja-api-explorer/issues)
-- **Documentation**: [مستندات کامل](https://github.com/your-username/ninja-api-explorer/wiki)
-- **Email**: support@yourwebsite.com
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## تغییرات
+## 🙏 Acknowledgments
 
-### نسخه 1.0.0
-- انتشار اولیه
-- رابط کاربری شبیه Swagger
-- تست API کامل
-- مدیریت route ها
-- آمار و گزارش‌گیری
-- تنظیمات پیشرفته
+- WordPress REST API team for the excellent API framework
+- WordPress community for inspiration and feedback
+- Contributors who help improve this plugin
 
-## نویسنده
+## 📞 Support
 
-**نام شما**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- وب‌سایت: [https://yourwebsite.com](https://yourwebsite.com)
-- Twitter: [@yourusername](https://twitter.com/yourusername)
+- **Documentation**: Check this README and inline code comments
+- **Issues**: Report bugs and request features via GitHub issues
+- **Community**: Join WordPress developer communities for general help
+
+## 🔄 Changelog
+
+### Version 1.0.0
+- Initial release
+- Complete MVC architecture implementation
+- Route discovery and display functionality
+- Built-in API testing tool
+- Tabbed interface with filtering and search
+- Responsive design for all devices
+- OpenAPI specification generation
+- Request logging system
 
 ---
 
-⭐ اگر این پلاگین برایتان مفید بود، لطفاً ستاره دهید!
+**Made with ❤️ for the WordPress community**
