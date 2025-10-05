@@ -538,6 +538,9 @@
         console.log('Route Data:', ParsedRouteData);
         console.log('Generated URL:', FullUrl);
         
+        // Generate method options based on route data
+        const AvailableMethods = GenerateMethodOptions(ParsedRouteData);
+        
         const ModalContent = `
             <form id="api-test-form">
                 <div class="form-group">
@@ -549,13 +552,7 @@
                 <div class="form-group">
                     <label for="test-method">Method</label>
                     <select id="test-method" class="form-control">
-                        <option value="GET">GET</option>
-                        <option value="POST">POST</option>
-                        <option value="PUT">PUT</option>
-                        <option value="PATCH">PATCH</option>
-                        <option value="DELETE">DELETE</option>
-                        <option value="OPTIONS">OPTIONS</option>
-                        <option value="HEAD">HEAD</option>
+                        ${AvailableMethods}
                     </select>
                 </div>
                 
@@ -594,6 +591,18 @@
         // Bind form submission handler
         Modal.find('#api-test-form').on('submit', HandleApiTestFormSubmission);
         
+        // Set default method (prefer GET, then first available method)
+        const $MethodSelect = Modal.find('#test-method');
+        const AvailableMethods = $MethodSelect.find('option').map(function() {
+            return $(this).val();
+        }).get();
+        
+        if (AvailableMethods.includes('GET')) {
+            $MethodSelect.val('GET');
+        } else if (AvailableMethods.length > 0) {
+            $MethodSelect.val(AvailableMethods[0]);
+        }
+        
         // Show/hide body field based on method
         Modal.find('#test-method').on('change', function() {
             const Method = $(this).val();
@@ -604,6 +613,9 @@
                 $BodyGroup.hide();
             }
         });
+        
+        // Trigger initial method change to show/hide body field
+        Modal.find('#test-method').trigger('change');
     }
     
     /**
@@ -712,6 +724,36 @@
                 $SubmitBtn.prop('disabled', false).text('Test Endpoint');
             }
         });
+    }
+    
+    /**
+     * Generate method options based on route data
+     * Creates HTML options for only the methods that the route supports
+     */
+    function GenerateMethodOptions(RouteData) {
+        // Default methods if no route data available
+        const DefaultMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'];
+        
+        let AvailableMethods = DefaultMethods;
+        
+        // Check if route data has methods information
+        if (RouteData && RouteData.methods) {
+            if (Array.isArray(RouteData.methods)) {
+                // If methods is an array of strings
+                AvailableMethods = RouteData.methods.map(method => method.toUpperCase());
+            } else if (typeof RouteData.methods === 'object') {
+                // If methods is an object with method names as keys
+                AvailableMethods = Object.keys(RouteData.methods).map(method => method.toUpperCase());
+            }
+        }
+        
+        // Generate HTML options
+        let MethodOptions = '';
+        AvailableMethods.forEach(method => {
+            MethodOptions += `<option value="${method}">${method}</option>\n`;
+        });
+        
+        return MethodOptions;
     }
     
     /**
