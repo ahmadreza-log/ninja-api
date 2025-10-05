@@ -351,8 +351,6 @@
     font-size: 24px;
     cursor: pointer;
     padding: 0;
-    width: 30px;
-    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -488,16 +486,11 @@
 }
 
 .response-body {
-    background: #f8f9fa;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 15px;
     font-family: 'Consolas', 'Monaco', monospace;
     font-size: 13px;
     color: #333;
     max-height: 400px;
     overflow-y: auto;
-    white-space: pre-wrap;
     word-break: break-word;
 }
 
@@ -575,5 +568,213 @@
         font-size: 10px;
         padding: 2px 6px;
         min-width: 40px;
+    }
+}
+
+/* Beautiful JSON Styling */
+.json-viewer {
+    background: #ffffff;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-x: auto;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.json-viewer pre{
+    margin: 0;
+}
+
+.json-key {
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.json-string {
+    color: #059669;
+}
+
+.json-number {
+    color: #dc2626;
+}
+
+.json-boolean {
+    color: #d97706;
+    font-weight: 600;
+}
+
+.json-null {
+    color: #6b7280;
+    font-style: italic;
+}
+
+.json-bracket {
+    color: #374151;
+    font-weight: bold;
+}
+
+.json-colon {
+    color: #374151;
+    margin: 0 4px;
+}
+
+.json-comma {
+    color: #6b7280;
+}
+
+/* Syntax highlighting for different data types */
+.json-viewer .json-object {
+    margin-left: 20px;
+}
+
+.json-viewer .json-array {
+    margin-left: 20px;
+}
+
+.json-viewer .json-item {
+    margin-bottom: 4px;
+}
+
+/* Copy button for JSON */
+.json-copy-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+    color: #374151;
+    border: 1px solid #d1d5db;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.json-copy-btn:hover {
+    background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+    border-color: #9ca3af;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.json-copy-btn:active {
+    background: linear-gradient(135deg, #d1d5db, #9ca3af);
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.json-copy-btn .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    transition: transform 0.2s ease;
+}
+
+.json-copy-btn:hover .dashicons {
+    transform: scale(1.1);
+}
+
+.json-copy-btn .copy-text {
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Success state for copy button */
+.json-copy-btn.copied {
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    color: #166534;
+    border-color: #22c55e;
+    animation: successPulse 0.6s ease;
+}
+
+.json-copy-btn.copied .copy-text::after {
+    content: "ed!";
+    animation: fadeIn 0.3s ease;
+}
+
+.json-copy-btn.copied .dashicons {
+    color: #166534;
+    animation: checkmarkBounce 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes successPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes checkmarkBounce {
+    0% { transform: scale(0.8) rotate(-10deg); }
+    50% { transform: scale(1.2) rotate(5deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+/* Loading animation for JSON */
+.json-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d1d5db;
+    border-radius: 50%;
+    border-top-color: #2563eb;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Error styling for JSON */
+.json-error {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    padding: 15px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+}
+
+/* Success message for copy */
+.copy-success {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #22c55e;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    z-index: 9999;
+    animation: slideIn 0.3s ease-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
     }
 }

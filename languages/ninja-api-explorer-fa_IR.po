@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Ninja API Explorer 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ninja-api-explorer\n"
 "POT-Creation-Date: 2024-01-05 12:00+0000\n"
-"PO-Revision-Date: 2024-01-05 12:00+0000\n"
+"PO-Revision-Date: 2025-10-05 15:16+0330\n"
 "Last-Translator: Ninja API Explorer Team\n"
 "Language-Team: Persian (Iran)\n"
 "Language: fa_IR\n"
@@ -14,14 +14,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.2\n"
 
 #: ninja-api.php:45
 msgid "Ninja API Explorer"
 msgstr "اکسپلورر API نینجا"
 
 #: ninja-api.php:46
-msgid "A powerful WordPress plugin that provides a Swagger-like interface for exploring and testing WordPress REST APIs."
-msgstr "یک افزونه قدرتمند وردپرس که رابطی شبیه Swagger برای کاوش و تست REST API های وردپرس ارائه می‌دهد."
+msgid ""
+"A powerful WordPress plugin that provides a Swagger-like interface for "
+"exploring and testing WordPress REST APIs."
+msgstr ""
+"یک افزونه قدرتمند وردپرس که رابطی شبیه Swagger برای کاوش و تست REST API های "
+"وردپرس ارائه می‌دهد."
 
 #: ninja-api.php:47
 msgid "Explore, test, and document your WordPress REST API endpoints with ease."
@@ -47,7 +52,7 @@ msgstr "فضاهای نام"
 msgid "Namespace:"
 msgstr "فضای نام:"
 
-#: App/Views/admin/main-page.php:74
+#: App/Views/admin/main-page.php:74 App/Views/admin/main-page.php:190
 msgid "Method:"
 msgstr "متد:"
 
@@ -118,10 +123,6 @@ msgstr "تست endpoint API"
 #: App/Views/admin/main-page.php:186
 msgid "URL:"
 msgstr "URL:"
-
-#: App/Views/admin/main-page.php:190
-msgid "Method:"
-msgstr "متد:"
 
 #: App/Views/admin/main-page.php:200
 msgid "Headers:"
@@ -337,7 +338,8 @@ msgstr "نقش‌های کاربری مجاز"
 
 #: App/Views/admin/settings-page.php:96
 msgid "Select which user roles can access the API Explorer"
-msgstr "انتخاب کنید که کدام نقش‌های کاربری می‌توانند به اکسپلورر API دسترسی داشته باشند"
+msgstr ""
+"انتخاب کنید که کدام نقش‌های کاربری می‌توانند به اکسپلورر API دسترسی داشته باشند"
 
 #: App/Views/admin/settings-page.php:100
 msgid "Save Settings"

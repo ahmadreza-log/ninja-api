@@ -28,7 +28,7 @@
     let ApiExplorer = {
         CurrentFilters: {},  // Current active filters (namespace, method, public_only, search)
         IsLoading: false,    // Flag to prevent multiple simultaneous requests
-        ActiveTab: 'routes', // Currently active tab (routes, grouped, test)
+        ActiveTab: 'routes', // Currently active tab (routes only)
         OpenModals: []       // Array to track open modals for proper cleanup
     };
     
@@ -56,8 +56,6 @@
         // Clear filters button
         $('#clear-filters').on('click', ClearAllFilters);
         
-        // Namespace toggle buttons for grouped routes
-        $('.toggle-namespace').on('click', ToggleNamespace);
         
         // Route action buttons (Details, Test, Copy URL)
         $(document).on('click', '.view-details', HandleViewDetails);
@@ -740,27 +738,167 @@
         // Update response time
         $Time.text(`Response Time: ${Result.response_time}ms`);
         
-        // Update response body with proper formatting
+        // Create beautiful JSON display
         let BodyText = Result.response_body;
+        let IsJson = false;
+        
         if (typeof BodyText === 'object') {
             BodyText = JSON.stringify(BodyText, null, 2);
+            IsJson = true;
         } else if (typeof BodyText === 'string') {
             // Try to parse as JSON for pretty formatting
             try {
                 const Parsed = JSON.parse(BodyText);
                 BodyText = JSON.stringify(Parsed, null, 2);
+                IsJson = true;
             } catch (e) {
                 // Keep as string if not valid JSON
+                IsJson = false;
             }
         }
         
-        $Body.html(`<pre>${EscapeHtml(BodyText)}</pre>`);
+        if (IsJson) {
+            // Create beautiful JSON viewer
+            const JsonHtml = CreateBeautifulJsonViewer(BodyText);
+            $Body.html(JsonHtml);
+        } else {
+            // Regular text display
+            $Body.html(`<pre>${EscapeHtml(BodyText)}</pre>`);
+        }
         
         // Show response section
         $Response.show();
         
         // Scroll to response section
         $Response[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    
+    /**
+     * Create beautiful JSON viewer with syntax highlighting
+     * Converts JSON string to HTML with color-coded syntax highlighting
+     */
+    function CreateBeautifulJsonViewer(JsonString) {
+        try {
+            const JsonObject = JSON.parse(JsonString);
+            const FormattedJson = JSON.stringify(JsonObject, null, 2);
+            
+            // Apply syntax highlighting
+            let HighlightedJson = FormattedJson
+                // Strings
+                .replace(/"([^"]*)":/g, '<span class="json-key">"$1"</span>:')
+                .replace(/: "([^"]*)"/g, ': <span class="json-string">"$1"</span>')
+                // Numbers
+                .replace(/: (\d+\.?\d*)/g, ': <span class="json-number">$1</span>')
+                // Booleans
+                .replace(/: (true|false)/g, ': <span class="json-boolean">$1</span>')
+                // Null
+                .replace(/: null/g, ': <span class="json-null">null</span>')
+                // Brackets
+                .replace(/([{}])/g, '<span class="json-bracket">$1</span>')
+                .replace(/([[\]])/g, '<span class="json-bracket">$1</span>')
+                // Commas
+                .replace(/,/g, '<span class="json-comma">,</span>');
+            
+            return `
+                <div class="json-viewer">
+                    <button class="json-copy-btn" onclick="CopyJsonToClipboard('${EscapeHtml(FormattedJson)}')" title="Copy JSON to clipboard">
+                        <span class="dashicons dashicons-clipboard"></span>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                    <pre>${HighlightedJson}</pre>
+                </div>
+            `;
+        } catch (e) {
+            return `
+                <div class="json-error">
+                    <strong>Error parsing JSON:</strong><br>
+                    ${EscapeHtml(JsonString)}
+                </div>
+            `;
+        }
+    }
+    
+    /**
+     * Copy JSON to clipboard
+     * Copies the formatted JSON string to the user's clipboard
+     */
+    function CopyJsonToClipboard(JsonString) {
+        const $Button = event.target.closest('.json-copy-btn');
+        
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(JsonString).then(() => {
+                ShowCopySuccessState($Button);
+                ShowCopySuccessMessage();
+            }).catch(() => {
+                FallbackCopyTextToClipboard(JsonString, $Button);
+            });
+        } else {
+            FallbackCopyTextToClipboard(JsonString, $Button);
+        }
+    }
+    
+    /**
+     * Fallback copy method for older browsers
+     * Uses the traditional document.execCommand method
+     */
+    function FallbackCopyTextToClipboard(Text, $Button) {
+        const TextArea = document.createElement('textarea');
+        TextArea.value = Text;
+        TextArea.style.position = 'fixed';
+        TextArea.style.left = '-999999px';
+        TextArea.style.top = '-999999px';
+        document.body.appendChild(TextArea);
+        TextArea.focus();
+        TextArea.select();
+        
+        try {
+            const Successful = document.execCommand('copy');
+            if (Successful) {
+                ShowCopySuccessState($Button);
+                ShowCopySuccessMessage();
+            } else {
+                ShowNotification('Failed to copy JSON', 'error');
+            }
+        } catch (err) {
+            ShowNotification('Failed to copy JSON', 'error');
+        }
+        
+        document.body.removeChild(TextArea);
+    }
+    
+    /**
+     * Show copy success state on button
+     * Changes button appearance to show successful copy
+     */
+    function ShowCopySuccessState($Button) {
+        if ($Button && $Button.length > 0) {
+            $Button.addClass('copied');
+            
+            // Change icon to checkmark
+            const $Icon = $Button.find('.dashicons');
+            $Icon.removeClass('dashicons-clipboard').addClass('dashicons-yes-alt');
+            
+            // Reset after 2 seconds
+            setTimeout(() => {
+                $Button.removeClass('copied');
+                $Icon.removeClass('dashicons-yes-alt').addClass('dashicons-clipboard');
+            }, 2000);
+        }
+    }
+    
+    /**
+     * Show copy success message
+     * Displays a temporary success message when JSON is copied
+     */
+    function ShowCopySuccessMessage() {
+        const SuccessMessage = document.createElement('div');
+        SuccessMessage.className = 'copy-success';
+        SuccessMessage.textContent = 'JSON copied to clipboard!';
+        document.body.appendChild(SuccessMessage);
+        
+        setTimeout(() => {
+            document.body.removeChild(SuccessMessage);
+        }, 2000);
     }
     
     /**
