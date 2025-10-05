@@ -1,296 +1,276 @@
 <?php
 
 /**
- * Model برای مدیریت Route های API
+ * Model for managing API Routes
+ * Represents a single REST API route with its methods, parameters, and metadata
  */
 class ApiRouteModel
 {
     /**
-     * نام route
+     * Route name/path
      * @var string
      */
-    private $RouteName;
+    private $Name;
     
     /**
-     * داده‌های route
+     * Route data including methods and callbacks
      * @var array
      */
-    private $RouteData;
+    private $Data;
     
     /**
-     * سازنده کلاس
-     * @param string $RouteName
-     * @param array $RouteData
+     * Constructor
+     * @param string $Name
+     * @param array $Data
      */
-    public function __construct($RouteName, $RouteData = [])
+    public function __construct($Name, $Data = [])
     {
-        $this->RouteName = $RouteName;
-        $this->RouteData = $RouteData;
+        $this->Name = $Name;
+        $this->Data = $Data;
     }
     
     /**
-     * دریافت نام route
+     * Get route name
      * @return string
      */
-    public function GetRouteName()
+    public function GetName()
     {
-        return $this->RouteName;
+        return $this->Name;
     }
     
     /**
-     * دریافت داده‌های route
+     * Get route data
      * @return array
      */
-    public function GetRouteData()
+    public function GetData()
     {
-        return $this->RouteData;
+        return $this->Data;
     }
     
     /**
-     * دریافت methods موجود
+     * Get available HTTP methods
      * @return array
      */
     public function GetMethods()
     {
-        return $this->RouteData['methods'] ?? [];
+        return isset($this->Data['methods']) ? array_keys($this->Data['methods']) : [];
     }
     
     /**
-     * بررسی وجود method خاص
+     * Check if route has specific method
      * @param string $Method
      * @return bool
      */
     public function HasMethod($Method)
     {
-        return isset($this->RouteData['methods'][$Method]);
+        return isset($this->Data['methods'][strtoupper($Method)]);
     }
     
     /**
-     * دریافت اطلاعات method خاص
+     * Get method information
      * @param string $Method
      * @return array|null
      */
-    public function GetMethodData($Method)
+    public function GetMethodInfo($Method)
     {
-        return $this->RouteData['methods'][$Method] ?? null;
+        return $this->Data['methods'][strtoupper($Method)] ?? null;
     }
     
     /**
-     * دریافت parameters
+     * Get route parameters
      * @return array
      */
     public function GetParameters()
     {
-        return $this->RouteData['parameters'] ?? [];
+        return $this->Data['parameters'] ?? [];
     }
     
     /**
-     * دریافت query parameters
+     * Get query parameters for specific method
      * @param string $Method
      * @return array
      */
     public function GetQueryParameters($Method = null)
     {
-        if ($Method && isset($this->RouteData['methods'][$Method])) {
-            return $this->RouteData['methods'][$Method]['query_parameters'] ?? [];
+        if ($Method && isset($this->Data['methods'][$Method]['args'])) {
+            return $this->Data['methods'][$Method]['args'];
         }
         
-        // اگر method مشخص نشده، همه query parameters را برگردان
-        $AllQueryParameters = [];
-        foreach ($this->RouteData['methods'] ?? [] as $MethodData) {
-            $AllQueryParameters = array_merge($AllQueryParameters, $MethodData['query_parameters'] ?? []);
+        // If no method specified, return all query parameters
+        $AllParams = [];
+        foreach ($this->Data['methods'] ?? [] as $MethodName => $MethodData) {
+            if (isset($MethodData['args'])) {
+                $AllParams = array_merge($AllParams, $MethodData['args']);
+            }
         }
         
-        return $AllQueryParameters;
+        return $AllParams;
     }
     
     /**
-     * دریافت namespace
+     * Get namespace
      * @return string
      */
     public function GetNamespace()
     {
-        return $this->RouteData['namespace'] ?? '';
+        $Parts = explode('/', trim($this->Name, '/'));
+        return count($Parts) >= 2 ? $Parts[0] . '/' . $Parts[1] : 'unknown';
     }
     
     /**
-     * دریافت description
+     * Get route description
      * @return string
      */
     public function GetDescription()
     {
-        return $this->RouteData['description'] ?? '';
+        return $this->Data['description'] ?? '';
     }
     
     /**
-     * بررسی عمومی بودن route
+     * Check if route is public
      * @return bool
      */
     public function IsPublic()
     {
-        return $this->RouteData['is_public'] ?? false;
+        foreach ($this->Data['methods'] ?? [] as $Method => $MethodData) {
+            if (isset($MethodData['permission_callback'])) {
+                $Callback = $MethodData['permission_callback'];
+                if ($Callback === '__return_true' || $Callback === null) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     
     /**
-     * دریافت example URL
+     * Get example URL
      * @return string
      */
     public function GetExampleUrl()
     {
-        return $this->RouteData['example_url'] ?? '';
+        return $this->Data['example_url'] ?? '';
     }
     
     /**
-     * تولید URL کامل با پارامترها
+     * Generate complete URL with parameters
      * @param array $Parameters
      * @return string
      */
-    public function BuildUrl($Parameters = [])
+    public function GenerateUrl($Parameters = [])
     {
         $BaseUrl = rest_url();
-        $Url = $BaseUrl . $this->RouteName;
+        $Url = $BaseUrl . $this->Name;
         
-        // جایگزینی پارامترها
+        // Replace parameters
         foreach ($Parameters as $Key => $Value) {
             $Url = str_replace('{' . $Key . '}', $Value, $Url);
-            $Url = str_replace('(?P<' . $Key . '>[^/]+)', $Value, $Url);
         }
         
         return $Url;
     }
     
     /**
-     * تولید داده‌های تست
+     * Generate test data for this route
      * @param string $Method
      * @return array
      */
     public function GenerateTestData($Method = 'GET')
     {
         $TestData = [
-            'url' => $this->GetExampleUrl(),
-            'method' => $Method,
+            'url' => $this->GenerateUrl(),
+            'method' => strtoupper($Method),
             'headers' => [
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json'
             ],
             'body' => '',
-            'query_params' => []
+            'parameters' => []
         ];
         
-        // تنظیم method
-        if (!$this->HasMethod($Method)) {
-            $AvailableMethods = array_keys($this->GetMethods());
-            if (!empty($AvailableMethods)) {
-                $TestData['method'] = $AvailableMethods[0];
-            }
+        // Set method
+        if ($this->HasMethod($Method)) {
+            $TestData['method'] = strtoupper($Method);
         }
         
-        // تولید body برای POST/PUT/PATCH
+        // Generate body for POST/PUT/PATCH requests
         if (in_array($TestData['method'], ['POST', 'PUT', 'PATCH'])) {
-            $TestData['body'] = $this->GenerateRequestBody($TestData['method']);
+            $TestData['body'] = $this->GenerateRequestBody($Method);
         }
         
-        // تولید query parameters
-        $TestData['query_params'] = $this->GenerateQueryParameters($TestData['method']);
+        // Generate query parameters
+        $TestData['parameters'] = $this->GenerateQueryParameters($Method);
         
         return $TestData;
     }
     
     /**
-     * تولید request body
+     * Generate request body
      * @param string $Method
      * @return string
      */
-    private function GenerateRequestBody($Method)
+    public function GenerateRequestBody($Method)
     {
-        $MethodData = $this->GetMethodData($Method);
-        if (!$MethodData) {
-            return '';
-        }
-        
         $BodyData = [];
-        $QueryParameters = $MethodData['query_parameters'] ?? [];
+        $MethodInfo = $this->GetMethodInfo($Method);
         
-        foreach ($QueryParameters as $Param) {
-            if (!$Param['required']) {
-                continue;
+        if ($MethodInfo && isset($MethodInfo['args'])) {
+            foreach ($MethodInfo['args'] as $ParamName => $ParamConfig) {
+                if (isset($ParamConfig['required']) && $ParamConfig['required']) {
+                    $BodyData[$ParamName] = $this->GenerateExampleValue($ParamConfig);
+                }
             }
-            
-            $ParamName = $Param['name'];
-            $ParamType = $Param['type'] ?? 'string';
-            
-            // تولید مقدار مثال
-            $BodyData[$ParamName] = $this->GenerateExampleValue($ParamType, $ParamName);
         }
         
         return json_encode($BodyData, JSON_PRETTY_PRINT);
     }
     
     /**
-     * تولید query parameters
+     * Generate query parameters
      * @param string $Method
      * @return array
      */
-    private function GenerateQueryParameters($Method)
+    public function GenerateQueryParameters($Method)
     {
-        $MethodData = $this->GetMethodData($Method);
-        if (!$MethodData) {
-            return [];
-        }
-        
         $QueryParams = [];
-        $QueryParameters = $MethodData['query_parameters'] ?? [];
+        $MethodInfo = $this->GetMethodInfo($Method);
         
-        foreach ($QueryParameters as $Param) {
-            if (!$Param['required']) {
-                continue;
+        if ($MethodInfo && isset($MethodInfo['args'])) {
+            foreach ($MethodInfo['args'] as $ParamName => $ParamConfig) {
+                if (isset($ParamConfig['required']) && !$ParamConfig['required']) {
+                    // Only add simple parameters to query params
+                    if (!isset($ParamConfig['type']) || in_array($ParamConfig['type'], ['string', 'integer', 'number', 'boolean'])) {
+                        $QueryParams[$ParamName] = $this->GenerateExampleValue($ParamConfig);
+                    }
+                }
             }
-            
-            $ParamName = $Param['name'];
-            $ParamType = $Param['type'] ?? 'string';
-            
-            $QueryParams[$ParamName] = $this->GenerateExampleValue($ParamType, $ParamName);
         }
         
         return $QueryParams;
     }
     
     /**
-     * تولید مقدار مثال بر اساس نوع
-     * @param string $Type
-     * @param string $Name
+     * Generate example value based on parameter type
+     * @param array $ParamConfig
      * @return mixed
      */
-    private function GenerateExampleValue($Type, $Name)
+    private function GenerateExampleValue($ParamConfig)
     {
-        // تولید مقدار بر اساس نام پارامتر
-        $NameLower = strtolower($Name);
+        $Type = $ParamConfig['type'] ?? 'string';
+        $Name = $ParamConfig['name'] ?? '';
         
-        if (strpos($NameLower, 'id') !== false) {
+        // Generate value based on parameter name
+        if (strpos($Name, 'id') !== false) {
             return 123;
-        }
-        
-        if (strpos($NameLower, 'email') !== false) {
-            return 'example@example.com';
-        }
-        
-        if (strpos($NameLower, 'url') !== false) {
-            return 'https://example.com';
-        }
-        
-        if (strpos($NameLower, 'date') !== false) {
-            return date('Y-m-d');
-        }
-        
-        if (strpos($NameLower, 'time') !== false) {
-            return date('H:i:s');
-        }
-        
-        if (strpos($NameLower, 'slug') !== false) {
+        } elseif (strpos($Name, 'slug') !== false) {
             return 'example-slug';
+        } elseif (strpos($Name, 'type') !== false) {
+            return 'post';
+        } elseif (strpos($Name, 'status') !== false) {
+            return 'publish';
         }
         
-        // تولید مقدار بر اساس نوع
+        // Generate value based on type
         switch ($Type) {
             case 'integer':
                 return 123;
@@ -308,67 +288,67 @@ class ApiRouteModel
     }
     
     /**
-     * دریافت لیست methods موجود
+     * Get list of available methods
      * @return array
      */
     public function GetAvailableMethods()
     {
-        return array_keys($this->GetMethods());
+        return array_keys($this->Data['methods'] ?? []);
     }
     
     /**
-     * بررسی نیاز به authentication
+     * Check if route requires authentication
      * @param string $Method
      * @return bool
      */
     public function RequiresAuthentication($Method)
     {
-        $MethodData = $this->GetMethodData($Method);
-        if (!$MethodData) {
+        $MethodInfo = $this->GetMethodInfo($Method);
+        
+        if (!$MethodInfo) {
             return true;
         }
         
-        $PermissionCallback = $MethodData['permission_callback'] ?? null;
+        $Callback = $MethodInfo['permission_callback'] ?? null;
         
-        return $PermissionCallback !== '__return_true' && $PermissionCallback !== null;
+        return $Callback !== '__return_true' && $Callback !== null;
     }
     
     /**
-     * دریافت callback function
+     * Get callback function
      * @param string $Method
      * @return callable|null
      */
     public function GetCallback($Method)
     {
-        $MethodData = $this->GetMethodData($Method);
-        return $MethodData['callback'] ?? null;
+        $MethodInfo = $this->GetMethodInfo($Method);
+        return $MethodInfo['callback'] ?? null;
     }
     
     /**
-     * دریافت permission callback
+     * Get permission callback
      * @param string $Method
      * @return callable|null
      */
     public function GetPermissionCallback($Method)
     {
-        $MethodData = $this->GetMethodData($Method);
-        return $MethodData['permission_callback'] ?? null;
+        $MethodInfo = $this->GetMethodInfo($Method);
+        return $MethodInfo['permission_callback'] ?? null;
     }
     
     /**
-     * تبدیل به آرایه
+     * Convert to array
      * @return array
      */
     public function ToArray()
     {
         return [
-            'name' => $this->RouteName,
-            'data' => $this->RouteData,
-            'methods' => $this->GetAvailableMethods(),
-            'is_public' => $this->IsPublic(),
+            'name' => $this->Name,
+            'data' => $this->Data,
             'namespace' => $this->GetNamespace(),
-            'description' => $this->GetDescription(),
-            'example_url' => $this->GetExampleUrl()
+            'is_public' => $this->IsPublic(),
+            'methods' => $this->GetMethods(),
+            'description' => $this->GetDescription()
         ];
     }
 }

@@ -1,12 +1,13 @@
 <?php
 
 /**
- * کلاس کمکی برای کار با Route ها
+ * Helper class for working with API Routes
+ * Provides utility functions for route processing, URL generation, and data formatting
  */
 class RouteHelper
 {
     /**
-     * تبدیل route pattern به URL کامل
+     * Convert route pattern to complete URL
      * @param string $RoutePattern
      * @param array $Parameters
      * @return string
@@ -14,9 +15,14 @@ class RouteHelper
     public static function BuildUrlFromPattern($RoutePattern, $Parameters = [])
     {
         $BaseUrl = rest_url();
-        $FullPattern = $BaseUrl . $RoutePattern;
         
-        // جایگزینی پارامترها
+        // Ensure BaseUrl doesn't end with / and RoutePattern doesn't start with /
+        $BaseUrl = rtrim($BaseUrl, '/');
+        $RoutePattern = ltrim($RoutePattern, '/');
+        
+        $FullPattern = $BaseUrl . '/' . $RoutePattern;
+        
+        // Replace parameters
         foreach ($Parameters as $Key => $Value) {
             $FullPattern = str_replace('{' . $Key . '}', $Value, $FullPattern);
             $FullPattern = str_replace('(?P<' . $Key . '>[^/]+)', $Value, $FullPattern);
@@ -26,7 +32,7 @@ class RouteHelper
     }
     
     /**
-     * استخراج پارامترها از route pattern
+     * Extract parameters from route pattern
      * @param string $RoutePattern
      * @return array
      */
@@ -34,7 +40,7 @@ class RouteHelper
     {
         $Parameters = [];
         
-        // جستجوی پارامترهای {param} یا (?P<param>[^/]+)
+        // Search for parameters in format {param} or (?P<param>[^/]+)
         preg_match_all('/\{([^}]+)\}|\(\?P<([^>]+)>[^)]+\)/', $RoutePattern, $Matches);
         
         if (!empty($Matches[1])) {
@@ -67,7 +73,7 @@ class RouteHelper
     }
     
     /**
-     * تشخیص نوع HTTP Method
+     * Get color class for HTTP method
      * @param string $Method
      * @return string
      */
@@ -86,13 +92,13 @@ class RouteHelper
     }
     
     /**
-     * فرمت کردن route pattern برای نمایش
+     * Format route pattern for display
      * @param string $RoutePattern
      * @return string
      */
     public static function FormatRouteForDisplay($RoutePattern)
     {
-        // تبدیل regex patterns به فرمت قابل خواندن
+        // Convert regex patterns to readable format
         $FormattedRoute = preg_replace('/\(\?P<([^>]+)>[^)]+\)/', '{$1}', $RoutePattern);
         $FormattedRoute = preg_replace('/\(\?\d*\)/', '', $FormattedRoute);
         $FormattedRoute = preg_replace('/[\[\]]/', '', $FormattedRoute);
@@ -101,7 +107,7 @@ class RouteHelper
     }
     
     /**
-     * بررسی اینکه آیا route عمومی است یا خصوصی
+     * Check if route is public or private
      * @param array $RouteData
      * @return bool
      */
@@ -115,13 +121,13 @@ class RouteHelper
             if (isset($MethodData['permission_callback'])) {
                 $Callback = $MethodData['permission_callback'];
                 
-                // اگر permission_callback برابر '__return_true' باشد، عمومی است
+                // If permission_callback is '__return_true', it's public
                 if ($Callback === '__return_true' || 
                     (is_string($Callback) && $Callback === '__return_true')) {
                     return true;
                 }
                 
-                // اگر permission_callback برابر null باشد، عمومی است
+                // If permission_callback is null, it's public
                 if ($Callback === null) {
                     return true;
                 }
@@ -132,7 +138,7 @@ class RouteHelper
     }
     
     /**
-     * تولید مثال URL برای route
+     * Generate example URL for route
      * @param string $RoutePattern
      * @param string $Namespace
      * @return string
@@ -145,7 +151,7 @@ class RouteHelper
         foreach ($Parameters as $Parameter) {
             $Name = $Parameter['name'];
             
-            // تولید مقدار مثال بر اساس نام پارامتر
+            // Generate example value based on parameter name
             if (strpos($Name, 'id') !== false) {
                 $ExampleParameters[$Name] = '123';
             } elseif (strpos($Name, 'slug') !== false) {
@@ -157,13 +163,15 @@ class RouteHelper
             }
         }
         
-        $ExampleUrl = self::BuildUrlFromPattern($Namespace . $RoutePattern, $ExampleParameters);
+        // Ensure we don't duplicate the namespace
+        $FullPattern = $Namespace . '/' . ltrim($RoutePattern, '/');
+        $ExampleUrl = self::BuildUrlFromPattern($FullPattern, $ExampleParameters);
         
         return $ExampleUrl;
     }
     
     /**
-     * استخراج query parameters از args
+     * Extract query parameters from args
      * @param array $Args
      * @return array
      */
@@ -191,7 +199,7 @@ class RouteHelper
     }
     
     /**
-     * گروه‌بندی routes بر اساس namespace
+     * Group routes by namespace
      * @param array $Routes
      * @return array
      */
@@ -212,14 +220,14 @@ class RouteHelper
             $GroupedRoutes[$Namespace]['routes'][$RouteName] = $RouteData;
         }
         
-        // مرتب‌سازی بر اساس namespace
+        // Sort by namespace
         ksort($GroupedRoutes);
         
         return $GroupedRoutes;
     }
     
     /**
-     * استخراج namespace از نام route
+     * Extract namespace from route name
      * @param string $RouteName
      * @return string
      */
@@ -235,7 +243,7 @@ class RouteHelper
     }
     
     /**
-     * تولید HTML برای نمایش route
+     * Generate HTML for displaying route
      * @param string $RouteName
      * @param array $RouteData
      * @return string
@@ -244,7 +252,7 @@ class RouteHelper
     {
         $Html = '<div class="api-route-card" data-route="' . esc_attr($RouteName) . '">';
         
-        // Header با method ها
+        // Header with methods
         $Html .= '<div class="route-header">';
         
         if (isset($RouteData['methods'])) {

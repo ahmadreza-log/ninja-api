@@ -216,6 +216,8 @@ class NinjaApiExplorer
             'nonce' => wp_create_nonce('ninja_api_explorer_nonce'),
             'restUrl' => rest_url(),
             'homeUrl' => home_url(),
+            'language' => get_locale(),
+            'translations' => $this->GetJavaScriptTranslations(),
             'strings' => [
                 'loading' => __('Loading...', 'ninja-api-explorer'),
                 'error' => __('Error occurred', 'ninja-api-explorer'),
@@ -352,6 +354,24 @@ class NinjaApiExplorer
         $RouteDetails = $ApiService->GetRouteDetails($RouteName);
         
         wp_send_json_success($RouteDetails);
+    }
+    
+    /**
+     * Get JavaScript translations
+     * @return array
+     */
+    private function GetJavaScriptTranslations()
+    {
+        $TranslationsFile = NINJA_API_EXPLORER_PLUGIN_PATH . 'languages/translations.json';
+        
+        if (!file_exists($TranslationsFile)) {
+            return [];
+        }
+        
+        $TranslationsJson = file_get_contents($TranslationsFile);
+        $Translations = json_decode($TranslationsJson, true);
+        
+        return $Translations ?: [];
     }
     
     /**

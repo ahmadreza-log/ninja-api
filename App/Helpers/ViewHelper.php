@@ -1,26 +1,27 @@
 <?php
 
 /**
- * کلاس کمکی برای مدیریت View ها
+ * Helper class for managing Views
+ * Provides utility functions for view rendering, data formatting, and HTML generation
  */
 class ViewHelper
 {
     /**
-     * مسیر پوشه Views
+     * Path to Views folder
      * @var string
      */
     private $ViewsPath;
     
     /**
-     * سازنده کلاس
+     * Constructor
      */
     public function __construct()
     {
-        $this->ViewsPath = NINJA_API_EXPLORER_APP_PATH . 'Views/';
+        $this->ViewsPath = NINJA_API_EXPLORER_PLUGIN_PATH . 'App/Views/';
     }
     
     /**
-     * رندر کردن یک View
+     * Render a view with data
      * @param string $ViewName
      * @param array $Data
      * @return void
@@ -29,28 +30,24 @@ class ViewHelper
     {
         $ViewFile = $this->ViewsPath . $ViewName . '.php';
         
-        if (!file_exists($ViewFile)) {
-            wp_die(sprintf(__('View file not found: %s', 'ninja-api-explorer'), $ViewName));
-        }
-        
-        // استخراج متغیرها از آرایه $Data
+        // Extract variables from $Data array
         extract($Data);
         
-        // شروع output buffering
+        // Start output buffering
         ob_start();
         
-        // بارگذاری فایل view
+        // Load view file
         include $ViewFile;
         
-        // دریافت محتوا و پاک کردن buffer
+        // Get content and clean buffer
         $Content = ob_get_clean();
         
-        // نمایش محتوا
+        // Display content
         echo $Content;
     }
     
     /**
-     * دریافت محتوای یک View بدون نمایش
+     * Get view content without displaying it
      * @param string $ViewName
      * @param array $Data
      * @return string
@@ -60,26 +57,26 @@ class ViewHelper
         $ViewFile = $this->ViewsPath . $ViewName . '.php';
         
         if (!file_exists($ViewFile)) {
-            return sprintf(__('View file not found: %s', 'ninja-api-explorer'), $ViewName);
+            return '';
         }
         
-        // استخراج متغیرها از آرایه $Data
+        // Extract variables from $Data array
         extract($Data);
         
-        // شروع output buffering
+        // Start output buffering
         ob_start();
         
-        // بارگذاری فایل view
+        // Load view file
         include $ViewFile;
         
-        // دریافت محتوا و پاک کردن buffer
+        // Get content and clean buffer
         $Content = ob_get_clean();
         
         return $Content;
     }
     
     /**
-     * بررسی وجود View
+     * Check if view exists
      * @param string $ViewName
      * @return bool
      */
@@ -90,76 +87,72 @@ class ViewHelper
     }
     
     /**
-     * رندر کردن partial (بخش کوچکی از view)
+     * Render a partial (small section of view)
      * @param string $PartialName
      * @param array $Data
      * @return void
      */
     public function RenderPartial($PartialName, $Data = [])
     {
-        $PartialPath = $this->ViewsPath . 'partials/' . $PartialName . '.php';
+        $PartialFile = $this->ViewsPath . 'partials/' . $PartialName . '.php';
         
-        if (!file_exists($PartialPath)) {
-            return;
-        }
-        
-        // استخراج متغیرها از آرایه $Data
+        // Extract variables from $Data array
         extract($Data);
         
-        // شروع output buffering
+        // Start output buffering
         ob_start();
         
-        // بارگذاری فایل partial
-        include $PartialPath;
+        // Load partial file
+        include $PartialFile;
         
-        // دریافت محتوا و پاک کردن buffer
+        // Get content and clean buffer
         $Content = ob_get_clean();
         
-        // نمایش محتوا
+        // Display content
         echo $Content;
     }
     
     /**
-     * دریافت محتوای partial
+     * Get partial content
      * @param string $PartialName
      * @param array $Data
      * @return string
      */
     public function GetPartialContent($PartialName, $Data = [])
     {
-        $PartialPath = $this->ViewsPath . 'partials/' . $PartialName . '.php';
+        $PartialFile = $this->ViewsPath . 'partials/' . $PartialName . '.php';
         
-        if (!file_exists($PartialPath)) {
+        if (!file_exists($PartialFile)) {
             return '';
         }
         
-        // استخراج متغیرها از آرایه $Data
+        // Extract variables from $Data array
         extract($Data);
         
-        // شروع output buffering
+        // Start output buffering
         ob_start();
         
-        // بارگذاری فایل partial
-        include $PartialPath;
+        // Load partial file
+        include $PartialFile;
         
-        // دریافت محتوا و پاک کردن buffer
+        // Get content and clean buffer
         $Content = ob_get_clean();
         
         return $Content;
     }
     
     /**
-     * فرار کردن HTML برای امنیت
+     * Escape HTML for security
      * @param string $String
      * @return string
      */
-    public function Escape($String)
+    public function EscapeHtml($String)
     {
-        return esc_html($String);
+        return htmlspecialchars($String, ENT_QUOTES, 'UTF-8');
     }
     
     /**
-     * فرار کردن attribute برای امنیت
+     * Escape HTML attribute for security
      * @param string $String
      * @return string
      */
@@ -169,35 +162,34 @@ class ViewHelper
     }
     
     /**
-     * فرمت کردن JSON برای نمایش
+     * Format JSON for display
      * @param mixed $Data
-     * @param int $Options
      * @return string
      */
-    public function JsonEncode($Data, $Options = JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+    public function FormatJson($Data)
     {
-        return json_encode($Data, $Options);
+        return json_encode($Data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
     
     /**
-     * تولید URL برای صفحه ادمین
+     * Generate admin page URL
      * @param string $Page
-     * @param array $Parameters
+     * @param array $Args
      * @return string
      */
-    public function AdminUrl($Page, $Parameters = [])
+    public function GetAdminUrl($Page, $Args = [])
     {
-        $Url = admin_url('admin.php?page=' . $Page);
+        $DefaultArgs = [
+            'page' => $Page
+        ];
         
-        if (!empty($Parameters)) {
-            $Url .= '&' . http_build_query($Parameters);
-        }
+        $Args = array_merge($DefaultArgs, $Args);
         
-        return $Url;
+        return admin_url('admin.php?' . http_build_query($Args));
     }
     
     /**
-     * تولید nonce field
+     * Generate nonce field
      * @param string $Action
      * @param string $Name
      * @return string
@@ -208,7 +200,7 @@ class ViewHelper
     }
     
     /**
-     * تولید nonce برای Ajax
+     * Generate nonce for AJAX
      * @param string $Action
      * @return string
      */
@@ -218,97 +210,91 @@ class ViewHelper
     }
     
     /**
-     * فرمت کردن زمان
-     * @param string $DateTime
-     * @param string $Format
+     * Format time for display
+     * @param int $Timestamp
      * @return string
      */
-    public function FormatDateTime($DateTime, $Format = 'Y/m/d H:i:s')
+    public function FormatTime($Timestamp)
     {
-        if (empty($DateTime)) {
-            return '';
-        }
-        
-        $Timestamp = strtotime($DateTime);
-        return date($Format, $Timestamp);
+        return date_i18n(get_option('date_format') . ' ' . get_option('time_format'), $Timestamp);
     }
     
     /**
-     * فرمت کردن مدت زمان
+     * Format duration
      * @param int $Seconds
      * @return string
      */
     public function FormatDuration($Seconds)
     {
-        if ($Seconds < 1) {
-            return round($Seconds * 1000) . 'ms';
-        }
-        
         if ($Seconds < 60) {
-            return round($Seconds, 2) . 's';
+            return $Seconds . ' ' . __('seconds', 'ninja-api-explorer');
+        } elseif ($Seconds < 3600) {
+            $Minutes = floor($Seconds / 60);
+            return $Minutes . ' ' . __('minutes', 'ninja-api-explorer');
+        } else {
+            $Hours = floor($Seconds / 3600);
+            return $Hours . ' ' . __('hours', 'ninja-api-explorer');
         }
-        
-        $Minutes = floor($Seconds / 60);
-        $RemainingSeconds = $Seconds % 60;
-        
-        if ($Minutes < 60) {
-            return $Minutes . 'm ' . round($RemainingSeconds) . 's';
-        }
-        
-        $Hours = floor($Minutes / 60);
-        $RemainingMinutes = $Minutes % 60;
-        
-        return $Hours . 'h ' . $RemainingMinutes . 'm';
     }
     
     /**
-     * تولید کلاس CSS بر اساس وضعیت
-     * @param int $StatusCode
+     * Generate CSS class based on status
+     * @param string $Status
      * @return string
      */
-    public function GetStatusClass($StatusCode)
+    public function GetStatusClass($Status)
     {
-        if ($StatusCode >= 200 && $StatusCode < 300) {
-            return 'success';
-        } elseif ($StatusCode >= 300 && $StatusCode < 400) {
-            return 'info';
-        } elseif ($StatusCode >= 400 && $StatusCode < 500) {
-            return 'warning';
-        } else {
-            return 'danger';
-        }
+        $StatusClasses = [
+            'success' => 'status-success',
+            'error' => 'status-error',
+            'warning' => 'status-warning',
+            'info' => 'status-info',
+            'pending' => 'status-pending',
+            'processing' => 'status-processing'
+        ];
+        
+        return $StatusClasses[$Status] ?? 'status-default';
     }
     
     /**
-     * تولید رنگ بر اساس نوع method
+     * Generate color based on method type
      * @param string $Method
      * @return string
      */
     public function GetMethodColor($Method)
     {
-        $Colors = [
+        $MethodColors = [
             'GET' => '#28a745',
-            'POST' => '#007cba',
+            'POST' => '#007bff',
             'PUT' => '#ffc107',
             'PATCH' => '#17a2b8',
             'DELETE' => '#dc3545',
-            'OPTIONS' => '#6c757d'
+            'OPTIONS' => '#6c757d',
+            'HEAD' => '#6c757d'
         ];
         
-        return $Colors[strtoupper($Method)] ?? '#6c757d';
+        return $MethodColors[strtoupper($Method)] ?? '#6c757d';
     }
     
     /**
-     * تولید HTML برای نمایش JSON
+     * Generate HTML for displaying JSON
      * @param mixed $Data
-     * @param string $Class
+     * @param bool $Collapsible
      * @return string
      */
-    public function JsonDisplay($Data, $Class = 'json-display')
+    public function JsonHtml($Data, $Collapsible = false)
     {
-        $JsonString = $this->JsonEncode($Data);
-        $JsonString = htmlspecialchars($JsonString, ENT_QUOTES, 'UTF-8');
+        $JsonString = $this->FormatJson($Data);
+        $Html = '<pre class="json-display';
         
-        return '<pre class="' . esc_attr($Class) . '"><code>' . $JsonString . '</code></pre>';
+        if ($Collapsible) {
+            $Html .= ' json-collapsible" data-collapsed="true">';
+        } else {
+            $Html .= '">';
+        }
+        
+        $Html .= $this->EscapeHtml($JsonString) . '</pre>';
+        
+        return $Html;
     }
 }

@@ -1,9 +1,9 @@
 <?php
 /**
- * صفحه تنظیمات API Explorer
+ * Settings page view for API Explorer
  */
 
-// جلوگیری از دسترسی مستقیم
+// Prevent direct access
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -232,7 +232,7 @@ $ViewHelper = new ViewHelper();
     </div>
 </div>
 
-<!-- Modal برای Import Settings -->
+<!-- Modal for Import Settings -->
 <div id="import-settings-modal" class="modal" style="display: none;">
     <div class="modal-content">
         <div class="modal-header">
@@ -449,13 +449,13 @@ jQuery(document).ready(function($) {
             try {
                 const settings = JSON.parse(e.target.result);
                 
-                // اعتبارسنجی فایل
+                // Validate file
                 if (!settings.version || !settings.exported_at) {
                     alert('<?php _e('Invalid settings file format', 'ninja-api-explorer'); ?>');
                     return;
                 }
                 
-                // اعمال تنظیمات
+                // Apply settings
                 if (settings.enable_api_testing !== undefined) {
                     $('input[name="enable_api_testing"]').prop('checked', settings.enable_api_testing);
                 }

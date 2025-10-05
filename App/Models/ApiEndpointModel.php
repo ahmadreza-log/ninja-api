@@ -1,52 +1,53 @@
 <?php
 
 /**
- * Model برای مدیریت Endpoint های API
+ * Model for managing API Endpoints
+ * Represents a single endpoint within a route with specific method and configuration
  */
 class ApiEndpointModel
 {
     /**
-     * نام endpoint
+     * Endpoint name
      * @var string
      */
-    private $EndpointName;
+    private $Name;
     
     /**
-     * method HTTP
+     * HTTP method
      * @var string
      */
     private $Method;
     
     /**
-     * داده‌های endpoint
+     * Endpoint data
      * @var array
      */
-    private $EndpointData;
+    private $Data;
     
     /**
-     * سازنده کلاس
-     * @param string $EndpointName
+     * Constructor
+     * @param string $Name
      * @param string $Method
-     * @param array $EndpointData
+     * @param array $Data
      */
-    public function __construct($EndpointName, $Method, $EndpointData = [])
+    public function __construct($Name, $Method, $Data = [])
     {
-        $this->EndpointName = $EndpointName;
+        $this->Name = $Name;
         $this->Method = strtoupper($Method);
-        $this->EndpointData = $EndpointData;
+        $this->Data = $Data;
     }
     
     /**
-     * دریافت نام endpoint
+     * Get endpoint name
      * @return string
      */
-    public function GetEndpointName()
+    public function GetName()
     {
-        return $this->EndpointName;
+        return $this->Name;
     }
     
     /**
-     * دریافت method HTTP
+     * Get HTTP method
      * @return string
      */
     public function GetMethod()
@@ -55,112 +56,113 @@ class ApiEndpointModel
     }
     
     /**
-     * دریافت داده‌های endpoint
+     * Get endpoint data
      * @return array
      */
-    public function GetEndpointData()
+    public function GetData()
     {
-        return $this->EndpointData;
+        return $this->Data;
     }
     
     /**
-     * دریافت callback function
+     * Get callback function
      * @return callable|null
      */
     public function GetCallback()
     {
-        return $this->EndpointData['callback'] ?? null;
+        return $this->Data['callback'] ?? null;
     }
     
     /**
-     * دریافت permission callback
+     * Get permission callback
      * @return callable|null
      */
     public function GetPermissionCallback()
     {
-        return $this->EndpointData['permission_callback'] ?? null;
+        return $this->Data['permission_callback'] ?? null;
     }
     
     /**
-     * دریافت args
+     * Get arguments configuration
      * @return array
      */
     public function GetArgs()
     {
-        return $this->EndpointData['args'] ?? [];
+        return $this->Data['args'] ?? [];
     }
     
     /**
-     * دریافت query parameters
+     * Get query parameters
      * @return array
      */
     public function GetQueryParameters()
     {
+        $Parameters = [];
         $Args = $this->GetArgs();
-        $QueryParameters = [];
         
         foreach ($Args as $ParamName => $ParamConfig) {
             if (is_array($ParamConfig)) {
-                $QueryParameters[] = [
+                $Parameters[] = [
                     'name' => $ParamName,
                     'type' => $ParamConfig['type'] ?? 'string',
                     'required' => $ParamConfig['required'] ?? false,
                     'default' => $ParamConfig['default'] ?? null,
                     'description' => $ParamConfig['description'] ?? '',
                     'validation_callback' => $ParamConfig['validation_callback'] ?? null,
-                    'sanitize_callback' => $ParamConfig['sanitize_callback'] ?? null,
-                    'format' => $ParamConfig['format'] ?? null,
-                    'enum' => $ParamConfig['enum'] ?? null,
-                    'minimum' => $ParamConfig['minimum'] ?? null,
-                    'maximum' => $ParamConfig['maximum'] ?? null,
-                    'minLength' => $ParamConfig['minLength'] ?? null,
-                    'maxLength' => $ParamConfig['maxLength'] ?? null
+                    'sanitize_callback' => $ParamConfig['sanitize_callback'] ?? null
                 ];
             }
         }
         
-        return $QueryParameters;
+        return $Parameters;
     }
     
     /**
-     * دریافت required parameters
+     * Get required parameters
      * @return array
      */
     public function GetRequiredParameters()
     {
-        $QueryParameters = $this->GetQueryParameters();
+        $Required = [];
         
-        return array_filter($QueryParameters, function($Param) {
-            return $Param['required'];
-        });
+        foreach ($this->GetQueryParameters() as $Param) {
+            if ($Param['required']) {
+                $Required[] = $Param;
+            }
+        }
+        
+        return $Required;
     }
     
     /**
-     * دریافت optional parameters
+     * Get optional parameters
      * @return array
      */
     public function GetOptionalParameters()
     {
-        $QueryParameters = $this->GetQueryParameters();
+        $Optional = [];
         
-        return array_filter($QueryParameters, function($Param) {
-            return !$Param['required'];
-        });
+        foreach ($this->GetQueryParameters() as $Param) {
+            if (!$Param['required']) {
+                $Optional[] = $Param;
+            }
+        }
+        
+        return $Optional;
     }
     
     /**
-     * بررسی عمومی بودن endpoint
+     * Check if endpoint is public
      * @return bool
      */
     public function IsPublic()
     {
-        $PermissionCallback = $this->GetPermissionCallback();
-        
-        return $PermissionCallback === '__return_true' || $PermissionCallback === null;
+        $Callback = $this->GetPermissionCallback();
+        return $Callback === '__return_true' || $Callback === null;
     }
     
     /**
-     * بررسی نیاز به authentication
+     * Check if endpoint requires authentication
      * @return bool
      */
     public function RequiresAuthentication()
@@ -169,65 +171,64 @@ class ApiEndpointModel
     }
     
     /**
-     * تولید داده‌های تست
+     * Generate test data
      * @return array
      */
     public function GenerateTestData()
     {
         $TestData = [
-            'url' => $this->BuildTestUrl(),
+            'url' => $this->GenerateTestUrl(),
             'method' => $this->Method,
             'headers' => $this->GetDefaultHeaders(),
             'body' => '',
-            'query_params' => []
+            'parameters' => []
         ];
         
-        // تولید body برای POST/PUT/PATCH
+        // Generate body for POST/PUT/PATCH requests
         if (in_array($this->Method, ['POST', 'PUT', 'PATCH'])) {
             $TestData['body'] = $this->GenerateRequestBody();
         }
         
-        // تولید query parameters
-        $TestData['query_params'] = $this->GenerateQueryParameters();
+        // Generate query parameters
+        $TestData['parameters'] = $this->GenerateQueryParameters();
         
         return $TestData;
     }
     
     /**
-     * تولید URL تست
+     * Generate test URL
      * @return string
      */
-    private function BuildTestUrl()
+    public function GenerateTestUrl()
     {
         $BaseUrl = rest_url();
-        $Url = $BaseUrl . $this->EndpointName;
+        $Url = $BaseUrl . $this->Name;
         
-        // جایگزینی پارامترها با مقادیر مثال
+        // Replace parameters with example values
         $Parameters = $this->ExtractPathParameters();
-        foreach ($Parameters as $ParamName => $ParamData) {
-            $ExampleValue = $this->GenerateExampleValue($ParamData['type'] ?? 'string', $ParamName);
-            $Url = str_replace('{' . $ParamName . '}', $ExampleValue, $Url);
-            $Url = str_replace('(?P<' . $ParamName . '>[^/]+)', $ExampleValue, $Url);
+        foreach ($Parameters as $Param) {
+            $ExampleValue = $this->GenerateExampleValue($Param['name'], $Param['type'] ?? 'string');
+            $Url = str_replace('{' . $Param['name'] . '}', $ExampleValue, $Url);
         }
         
         return $Url;
     }
     
     /**
-     * استخراج path parameters
+     * Extract path parameters from route
      * @return array
      */
     private function ExtractPathParameters()
     {
         $Parameters = [];
         
-        // جستجوی پارامترهای {param} یا (?P<param>[^/]+)
-        preg_match_all('/\{([^}]+)\}|\(\?P<([^>]+)>[^)]+\)/', $this->EndpointName, $Matches);
+        // Search for parameters in format {param} or (?P<param>[^/]+)
+        preg_match_all('/\{([^}]+)\}|\(\?P<([^>]+)>[^)]+\)/', $this->Name, $Matches);
         
         if (!empty($Matches[1])) {
             foreach ($Matches[1] as $Parameter) {
                 if (!empty($Parameter)) {
-                    $Parameters[$Parameter] = [
+                    $Parameters[] = [
                         'name' => $Parameter,
                         'type' => 'string'
                     ];
@@ -238,7 +239,7 @@ class ApiEndpointModel
         if (!empty($Matches[2])) {
             foreach ($Matches[2] as $Parameter) {
                 if (!empty($Parameter)) {
-                    $Parameters[$Parameter] = [
+                    $Parameters[] = [
                         'name' => $Parameter,
                         'type' => 'string'
                     ];
@@ -250,40 +251,34 @@ class ApiEndpointModel
     }
     
     /**
-     * تولید request body
+     * Generate request body
      * @return string
      */
-    private function GenerateRequestBody()
+    public function GenerateRequestBody()
     {
-        $RequiredParameters = $this->GetRequiredParameters();
         $BodyData = [];
+        $RequiredParams = $this->GetRequiredParameters();
         
-        foreach ($RequiredParameters as $Param) {
-            $ParamName = $Param['name'];
-            $ParamType = $Param['type'];
-            
-            $BodyData[$ParamName] = $this->GenerateExampleValue($ParamType, $ParamName);
+        foreach ($RequiredParams as $Param) {
+            $BodyData[$Param['name']] = $this->GenerateExampleValue($Param['name'], $Param['type']);
         }
         
         return json_encode($BodyData, JSON_PRETTY_PRINT);
     }
     
     /**
-     * تولید query parameters
+     * Generate query parameters
      * @return array
      */
-    private function GenerateQueryParameters()
+    public function GenerateQueryParameters()
     {
-        $OptionalParameters = $this->GetOptionalParameters();
         $QueryParams = [];
+        $OptionalParams = $this->GetOptionalParameters();
         
-        foreach ($OptionalParameters as $Param) {
-            $ParamName = $Param['name'];
-            $ParamType = $Param['type'];
-            
-            // فقط پارامترهای ساده را به query params اضافه کن
-            if (!in_array($ParamType, ['array', 'object'])) {
-                $QueryParams[$ParamName] = $this->GenerateExampleValue($ParamType, $ParamName);
+        foreach ($OptionalParams as $Param) {
+            // Only add simple parameters to query params
+            if (!isset($Param['type']) || in_array($Param['type'], ['string', 'integer', 'number', 'boolean'])) {
+                $QueryParams[$Param['name']] = $this->GenerateExampleValue($Param['name'], $Param['type']);
             }
         }
         
@@ -291,17 +286,17 @@ class ApiEndpointModel
     }
     
     /**
-     * دریافت default headers
+     * Get default headers
      * @return array
      */
-    private function GetDefaultHeaders()
+    public function GetDefaultHeaders()
     {
         $Headers = [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json'
         ];
         
-        // اگر نیاز به authentication دارد، header مربوطه را اضافه کن
+        // If requires authentication, add auth header
         if ($this->RequiresAuthentication()) {
             $Headers['Authorization'] = 'Bearer YOUR_TOKEN_HERE';
         }
@@ -310,49 +305,31 @@ class ApiEndpointModel
     }
     
     /**
-     * تولید مقدار مثال بر اساس نوع
-     * @param string $Type
+     * Generate example value based on parameter name and type
      * @param string $Name
+     * @param string $Type
      * @return mixed
      */
-    private function GenerateExampleValue($Type, $Name)
+    private function GenerateExampleValue($Name, $Type)
     {
-        $NameLower = strtolower($Name);
-        
-        // تولید مقدار بر اساس نام پارامتر
-        if (strpos($NameLower, 'id') !== false) {
+        // Generate value based on parameter name
+        if (strpos($Name, 'id') !== false) {
             return 123;
-        }
-        
-        if (strpos($NameLower, 'email') !== false) {
-            return 'example@example.com';
-        }
-        
-        if (strpos($NameLower, 'url') !== false) {
+        } elseif (strpos($Name, 'slug') !== false) {
+            return 'example-slug';
+        } elseif (strpos($Name, 'type') !== false) {
+            return 'post';
+        } elseif (strpos($Name, 'status') !== false) {
+            return 'publish';
+        } elseif (strpos($Name, 'date') !== false) {
+            return date('Y-m-d');
+        } elseif (strpos($Name, 'email') !== false) {
+            return 'user@example.com';
+        } elseif (strpos($Name, 'url') !== false) {
             return 'https://example.com';
         }
         
-        if (strpos($NameLower, 'date') !== false) {
-            return date('Y-m-d');
-        }
-        
-        if (strpos($NameLower, 'time') !== false) {
-            return date('H:i:s');
-        }
-        
-        if (strpos($NameLower, 'slug') !== false) {
-            return 'example-slug';
-        }
-        
-        if (strpos($NameLower, 'password') !== false) {
-            return 'password123';
-        }
-        
-        if (strpos($NameLower, 'token') !== false) {
-            return 'token123';
-        }
-        
-        // تولید مقدار بر اساس نوع
+        // Generate value based on type
         switch ($Type) {
             case 'integer':
                 return 123;
@@ -370,10 +347,10 @@ class ApiEndpointModel
     }
     
     /**
-     * دریافت schema برای validation
+     * Get schema for validation
      * @return array
      */
-    public function GetValidationSchema()
+    public function GetSchema()
     {
         $Schema = [
             'type' => 'object',
@@ -381,35 +358,14 @@ class ApiEndpointModel
             'required' => []
         ];
         
-        $QueryParameters = $this->GetQueryParameters();
-        
-        foreach ($QueryParameters as $Param) {
+        foreach ($this->GetQueryParameters() as $Param) {
             $PropertySchema = [
-                'type' => $Param['type']
+                'type' => $Param['type'] ?? 'string',
+                'description' => $Param['description'] ?? ''
             ];
             
-            if (isset($Param['description'])) {
-                $PropertySchema['description'] = $Param['description'];
-            }
-            
-            if (isset($Param['minimum'])) {
-                $PropertySchema['minimum'] = $Param['minimum'];
-            }
-            
-            if (isset($Param['maximum'])) {
-                $PropertySchema['maximum'] = $Param['maximum'];
-            }
-            
-            if (isset($Param['minLength'])) {
-                $PropertySchema['minLength'] = $Param['minLength'];
-            }
-            
-            if (isset($Param['maxLength'])) {
-                $PropertySchema['maxLength'] = $Param['maxLength'];
-            }
-            
-            if (isset($Param['enum'])) {
-                $PropertySchema['enum'] = $Param['enum'];
+            if (isset($Param['default'])) {
+                $PropertySchema['default'] = $Param['default'];
             }
             
             $Schema['properties'][$Param['name']] = $PropertySchema;
@@ -423,52 +379,60 @@ class ApiEndpointModel
     }
     
     /**
-     * دریافت OpenAPI specification
+     * Get OpenAPI specification
      * @return array
      */
     public function GetOpenApiSpec()
     {
         $Spec = [
-            'operationId' => $this->GenerateOperationId(),
             'summary' => $this->GetSummary(),
             'description' => $this->GetDescription(),
-            'parameters' => [],
-            'requestBody' => null,
+            'operationId' => $this->GenerateOperationId(),
+            'tags' => [$this->GetNamespace()],
             'responses' => [
                 '200' => [
-                    'description' => 'Successful response'
+                    'description' => 'Successful response',
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object'
+                            ]
+                        ]
+                    ]
                 ]
-            ],
-            'security' => []
+            ]
         ];
         
-        // اضافه کردن parameters
-        $QueryParameters = $this->GetQueryParameters();
-        foreach ($QueryParameters as $Param) {
-            $Spec['parameters'][] = [
-                'name' => $Param['name'],
-                'in' => 'query',
-                'required' => $Param['required'],
-                'schema' => [
-                    'type' => $Param['type']
-                ],
-                'description' => $Param['description'] ?? ''
-            ];
+        // Add parameters
+        $Parameters = $this->GetQueryParameters();
+        if (!empty($Parameters)) {
+            $Spec['parameters'] = [];
+            foreach ($Parameters as $Param) {
+                $Spec['parameters'][] = [
+                    'name' => $Param['name'],
+                    'in' => 'query',
+                    'required' => $Param['required'],
+                    'schema' => [
+                        'type' => $Param['type'] ?? 'string'
+                    ],
+                    'description' => $Param['description'] ?? ''
+                ];
+            }
         }
         
-        // اضافه کردن request body برای POST/PUT/PATCH
+        // Add request body for POST/PUT/PATCH
         if (in_array($this->Method, ['POST', 'PUT', 'PATCH'])) {
             $Spec['requestBody'] = [
                 'required' => true,
                 'content' => [
                     'application/json' => [
-                        'schema' => $this->GetValidationSchema()
+                        'schema' => $this->GetSchema()
                     ]
                 ]
             ];
         }
         
-        // اضافه کردن security
+        // Add security
         if ($this->RequiresAuthentication()) {
             $Spec['security'] = [
                 ['bearerAuth' => []]
@@ -479,56 +443,64 @@ class ApiEndpointModel
     }
     
     /**
-     * تولید operation ID
+     * Generate operation ID for OpenAPI
      * @return string
      */
     private function GenerateOperationId()
     {
-        $OperationId = strtolower($this->Method) . '_' . str_replace(['/', '-', '{', '}'], '_', $this->EndpointName);
-        $OperationId = preg_replace('/[^a-z0-9_]/', '', $OperationId);
-        
-        return $OperationId;
+        $CleanName = preg_replace('/[^a-zA-Z0-9]/', '_', $this->Name);
+        $CleanName = trim($CleanName, '_');
+        return strtolower($this->Method) . '_' . $CleanName;
     }
     
     /**
-     * دریافت summary
+     * Get summary
      * @return string
      */
     private function GetSummary()
     {
-        $MethodLower = strtolower($this->Method);
-        $EndpointName = str_replace('/', ' ', $this->EndpointName);
-        
-        return ucfirst($MethodLower) . ' ' . $EndpointName;
+        $Namespace = $this->GetNamespace();
+        $Action = str_replace($Namespace . '/', '', $this->Name);
+        return ucfirst($this->Method) . ' ' . $action;
     }
     
     /**
-     * دریافت description
+     * Get description
      * @return string
      */
     private function GetDescription()
     {
-        return 'API endpoint for ' . $this->Method . ' ' . $this->EndpointName;
+        return sprintf(
+            __('Execute %s request to %s endpoint', 'ninja-api-explorer'),
+            $this->Method,
+            $this->Name
+        );
     }
     
     /**
-     * تبدیل به آرایه
+     * Get namespace
+     * @return string
+     */
+    private function GetNamespace()
+    {
+        $Parts = explode('/', trim($this->Name, '/'));
+        return count($Parts) >= 2 ? $Parts[0] . '/' . $Parts[1] : 'unknown';
+    }
+    
+    /**
+     * Convert to array
      * @return array
      */
     public function ToArray()
     {
         return [
-            'name' => $this->EndpointName,
+            'name' => $this->Name,
             'method' => $this->Method,
-            'data' => $this->EndpointData,
+            'data' => $this->Data,
             'is_public' => $this->IsPublic(),
             'requires_auth' => $this->RequiresAuthentication(),
-            'query_parameters' => $this->GetQueryParameters(),
-            'required_parameters' => $this->GetRequiredParameters(),
-            'optional_parameters' => $this->GetOptionalParameters(),
-            'test_data' => $this->GenerateTestData(),
-            'validation_schema' => $this->GetValidationSchema(),
-            'openapi_spec' => $this->GetOpenApiSpec()
+            'parameters' => $this->GetQueryParameters(),
+            'test_data' => $this->GenerateTestData()
         ];
     }
 }

@@ -1,0 +1,404 @@
+# Persian (Iran) translation for Ninja API Explorer
+# Copyright (C) 2024 Ninja API Explorer Contributors
+# This file is distributed under the same license as the Ninja API Explorer package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Ninja API Explorer 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ninja-api-explorer\n"
+"POT-Creation-Date: 2024-01-05 12:00+0000\n"
+"PO-Revision-Date: 2024-01-05 12:00+0000\n"
+"Last-Translator: Ninja API Explorer Team\n"
+"Language-Team: Persian (Iran)\n"
+"Language: fa_IR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ninja-api.php:45
+msgid "Ninja API Explorer"
+msgstr "اکسپلورر API نینجا"
+
+#: ninja-api.php:46
+msgid "A powerful WordPress plugin that provides a Swagger-like interface for exploring and testing WordPress REST APIs."
+msgstr "یک افزونه قدرتمند وردپرس که رابطی شبیه Swagger برای کاوش و تست REST API های وردپرس ارائه می‌دهد."
+
+#: ninja-api.php:47
+msgid "Explore, test, and document your WordPress REST API endpoints with ease."
+msgstr "به راحتی endpoint های REST API وردپرس خود را کاوش، تست و مستند کنید."
+
+#: App/Views/admin/main-page.php:39
+msgid "Total Routes"
+msgstr "کل مسیرها"
+
+#: App/Views/admin/main-page.php:43
+msgid "Public Routes"
+msgstr "مسیرهای عمومی"
+
+#: App/Views/admin/main-page.php:47
+msgid "Total Endpoints"
+msgstr "کل endpoint ها"
+
+#: App/Views/admin/main-page.php:51
+msgid "Namespaces"
+msgstr "فضاهای نام"
+
+#: App/Views/admin/main-page.php:59
+msgid "Namespace:"
+msgstr "فضای نام:"
+
+#: App/Views/admin/main-page.php:74
+msgid "Method:"
+msgstr "متد:"
+
+#: App/Views/admin/main-page.php:85
+msgid "Public Only"
+msgstr "فقط عمومی"
+
+#: App/Views/admin/main-page.php:91
+msgid "Search Routes"
+msgstr "جستجوی مسیرها"
+
+#: App/Views/admin/main-page.php:95
+msgid "Clear Filters"
+msgstr "پاک کردن فیلترها"
+
+#: App/Views/admin/main-page.php:104
+msgid "All Routes"
+msgstr "همه مسیرها"
+
+#: App/Views/admin/main-page.php:108
+msgid "Grouped Routes"
+msgstr "مسیرهای گروه‌بندی شده"
+
+#: App/Views/admin/main-page.php:112
+msgid "API Tester"
+msgstr "تست کننده API"
+
+#: App/Views/admin/main-page.php:119
+msgid "Routes by Namespace"
+msgstr "مسیرها بر اساس فضاهای نام"
+
+#: App/Views/admin/main-page.php:125
+msgid "routes"
+msgstr "مسیر"
+
+#: App/Views/admin/main-page.php:141
+msgid "Details"
+msgstr "جزئیات"
+
+#: App/Views/admin/main-page.php:145
+msgid "Test"
+msgstr "تست"
+
+#: App/Views/admin/main-page.php:151
+msgid "Copy URL"
+msgstr "کپی URL"
+
+#: App/Views/admin/main-page.php:158
+msgid "Path Parameters:"
+msgstr "پارامترهای مسیر:"
+
+#: App/Views/admin/main-page.php:164
+msgid "Query Parameters:"
+msgstr "پارامترهای جستجو:"
+
+#: App/Views/admin/main-page.php:170
+msgid "Example Request:"
+msgstr "درخواست نمونه:"
+
+#: App/Views/admin/main-page.php:176
+msgid "Example Response:"
+msgstr "پاسخ نمونه:"
+
+#: App/Views/admin/main-page.php:182
+msgid "Test API Endpoint"
+msgstr "تست endpoint API"
+
+#: App/Views/admin/main-page.php:186
+msgid "URL:"
+msgstr "URL:"
+
+#: App/Views/admin/main-page.php:190
+msgid "Method:"
+msgstr "متد:"
+
+#: App/Views/admin/main-page.php:200
+msgid "Headers:"
+msgstr "هدرها:"
+
+#: App/Views/admin/main-page.php:204
+msgid "Header Name"
+msgstr "نام هدر"
+
+#: App/Views/admin/main-page.php:208
+msgid "Header Value"
+msgstr "مقدار هدر"
+
+#: App/Views/admin/main-page.php:212
+msgid "Remove"
+msgstr "حذف"
+
+#: App/Views/admin/main-page.php:216
+msgid "Add Header"
+msgstr "اضافه کردن هدر"
+
+#: App/Views/admin/main-page.php:222
+msgid "Request Body:"
+msgstr "بدنه درخواست:"
+
+#: App/Views/admin/main-page.php:230
+msgid "Timeout (seconds):"
+msgstr "زمان انقضا (ثانیه):"
+
+#: App/Views/admin/main-page.php:236
+msgid "Send Request"
+msgstr "ارسال درخواست"
+
+#: App/Views/admin/main-page.php:240
+msgid "Cancel"
+msgstr "لغو"
+
+#: App/Views/admin/main-page.php:247
+msgid "Response:"
+msgstr "پاسخ:"
+
+#: App/Views/admin/main-page.php:254
+msgid "No routes found."
+msgstr "مسیری یافت نشد."
+
+#: App/Views/admin/main-page.php:258
+msgid "No routes found"
+msgstr "مسیری یافت نشد"
+
+#: App/Views/admin/main-page.php:262
+msgid "No API routes are currently registered."
+msgstr "هیچ مسیر API در حال حاضر ثبت نشده است."
+
+#: App/Helpers/RouteHelper.php:47
+msgid "Parameter: %s"
+msgstr "پارامتر: %s"
+
+#: App/Helpers/ViewHelper.php:120
+msgid "seconds"
+msgstr "ثانیه"
+
+#: App/Helpers/ViewHelper.php:123
+msgid "minutes"
+msgstr "دقیقه"
+
+#: App/Helpers/ViewHelper.php:126
+msgid "hours"
+msgstr "ساعت"
+
+#: App/Models/ApiEndpointModel.php:506
+msgid "Execute %s request to %s endpoint"
+msgstr "اجرای درخواست %s برای endpoint %s"
+
+#: assets/js/admin.js:242
+msgid "Route name not found"
+msgstr "نام مسیر یافت نشد"
+
+#: assets/js/admin.js:246
+msgid "Failed to load route details"
+msgstr "بارگذاری جزئیات مسیر ناموفق بود"
+
+#: assets/js/admin.js:250
+msgid "Network error occurred while loading route details"
+msgstr "خطای شبکه در حین بارگذاری جزئیات مسیر رخ داد"
+
+#: assets/js/admin.js:258
+msgid "Route data not found"
+msgstr "داده مسیر یافت نشد"
+
+#: assets/js/admin.js:262
+msgid "URL not found"
+msgstr "URL یافت نشد"
+
+#: assets/js/admin.js:266
+msgid "URL copied to clipboard!"
+msgstr "URL به کلیپ‌بورد کپی شد!"
+
+#: assets/js/admin.js:270
+msgid "Failed to copy URL"
+msgstr "کپی URL ناموفق بود"
+
+#: assets/js/admin.js:278
+msgid "No text to copy"
+msgstr "متنی برای کپی وجود ندارد"
+
+#: assets/js/admin.js:282
+msgid "Copied to clipboard!"
+msgstr "به کلیپ‌بورد کپی شد!"
+
+#: assets/js/admin.js:286
+msgid "Failed to copy"
+msgstr "کپی ناموفق بود"
+
+#: assets/js/admin.js:294
+msgid "No route data available"
+msgstr "داده مسیر موجود نیست"
+
+#: assets/js/admin.js:400
+msgid "URL is required"
+msgstr "URL الزامی است"
+
+#: assets/js/admin.js:404
+msgid "Please enter a valid URL starting with http"
+msgstr "لطفاً یک URL معتبر که با http شروع می‌شود وارد کنید"
+
+#: assets/js/admin.js:450
+msgid "Test completed successfully!"
+msgstr "تست با موفقیت انجام شد!"
+
+#: assets/js/admin.js:454
+msgid "Test failed: %s"
+msgstr "تست ناموفق بود: %s"
+
+#: assets/js/admin.js:464
+msgid "Network error occurred"
+msgstr "خطای شبکه رخ داد"
+
+#: App/Views/admin/settings-page.php:20
+msgid "Settings"
+msgstr "تنظیمات"
+
+#: App/Views/admin/settings-page.php:24
+msgid "General Settings"
+msgstr "تنظیمات عمومی"
+
+#: App/Views/admin/settings-page.php:28
+msgid "Enable API Testing"
+msgstr "فعال کردن تست API"
+
+#: App/Views/admin/settings-page.php:32
+msgid "Allow users to test API endpoints directly from the interface"
+msgstr "اجازه دادن به کاربران برای تست مستقیم endpoint های API از رابط"
+
+#: App/Views/admin/settings-page.php:36
+msgid "Default Timeout"
+msgstr "زمان انقضای پیش‌فرض"
+
+#: App/Views/admin/settings-page.php:40
+msgid "Default timeout for API requests in seconds"
+msgstr "زمان انقضای پیش‌فرض برای درخواست‌های API بر حسب ثانیه"
+
+#: App/Views/admin/settings-page.php:44
+msgid "Enable Request Logging"
+msgstr "فعال کردن ثبت درخواست‌ها"
+
+#: App/Views/admin/settings-page.php:48
+msgid "Log all API test requests for debugging purposes"
+msgstr "ثبت تمام درخواست‌های تست API برای اهداف دیباگ"
+
+#: App/Views/admin/settings-page.php:52
+msgid "Max Log Entries"
+msgstr "حداکثر ورودی‌های ثبت"
+
+#: App/Views/admin/settings-page.php:56
+msgid "Maximum number of log entries to keep"
+msgstr "حداکثر تعداد ورودی‌های ثبت برای نگهداری"
+
+#: App/Views/admin/settings-page.php:60
+msgid "Display Settings"
+msgstr "تنظیمات نمایش"
+
+#: App/Views/admin/settings-page.php:64
+msgid "Routes Per Page"
+msgstr "مسیرها در هر صفحه"
+
+#: App/Views/admin/settings-page.php:68
+msgid "Number of routes to display per page"
+msgstr "تعداد مسیرها برای نمایش در هر صفحه"
+
+#: App/Views/admin/settings-page.php:72
+msgid "Show Public Routes Only"
+msgstr "فقط مسیرهای عمومی را نمایش دهید"
+
+#: App/Views/admin/settings-page.php:76
+msgid "Show only publicly accessible routes by default"
+msgstr "به طور پیش‌فرض فقط مسیرهای قابل دسترسی عمومی را نمایش دهید"
+
+#: App/Views/admin/settings-page.php:80
+msgid "Security Settings"
+msgstr "تنظیمات امنیتی"
+
+#: App/Views/admin/settings-page.php:84
+msgid "Require Authentication"
+msgstr "نیاز به احراز هویت"
+
+#: App/Views/admin/settings-page.php:88
+msgid "Require user authentication to access the API Explorer"
+msgstr "نیاز به احراز هویت کاربر برای دسترسی به اکسپلورر API"
+
+#: App/Views/admin/settings-page.php:92
+msgid "Allowed User Roles"
+msgstr "نقش‌های کاربری مجاز"
+
+#: App/Views/admin/settings-page.php:96
+msgid "Select which user roles can access the API Explorer"
+msgstr "انتخاب کنید که کدام نقش‌های کاربری می‌توانند به اکسپلورر API دسترسی داشته باشند"
+
+#: App/Views/admin/settings-page.php:100
+msgid "Save Settings"
+msgstr "ذخیره تنظیمات"
+
+#: App/Views/admin/settings-page.php:104
+msgid "Reset to Defaults"
+msgstr "بازنشانی به پیش‌فرض"
+
+#: App/Views/admin/settings-page.php:108
+msgid "Export Settings"
+msgstr "صادرات تنظیمات"
+
+#: App/Views/admin/settings-page.php:112
+msgid "Import Settings"
+msgstr "واردات تنظیمات"
+
+#: App/Views/admin/settings-page.php:116
+msgid "Settings saved successfully!"
+msgstr "تنظیمات با موفقیت ذخیره شد!"
+
+#: App/Views/admin/settings-page.php:120
+msgid "Settings reset to defaults!"
+msgstr "تنظیمات به پیش‌فرض بازنشانی شد!"
+
+#: App/Views/admin/settings-page.php:124
+msgid "Invalid settings file format"
+msgstr "فرمت فایل تنظیمات نامعتبر"
+
+#: App/Views/admin/documentation-page.php:20
+msgid "Documentation"
+msgstr "مستندات"
+
+#: App/Views/admin/documentation-page.php:24
+msgid "API Explorer Documentation"
+msgstr "مستندات اکسپلورر API"
+
+#: App/Views/admin/documentation-page.php:28
+msgid "Getting Started"
+msgstr "شروع کار"
+
+#: App/Views/admin/documentation-page.php:32
+msgid "How to Use"
+msgstr "نحوه استفاده"
+
+#: App/Views/admin/documentation-page.php:36
+msgid "Features"
+msgstr "ویژگی‌ها"
+
+#: App/Views/admin/documentation-page.php:40
+msgid "Troubleshooting"
+msgstr "عیب‌یابی"
+
+#: App/Views/admin/documentation-page.php:44
+msgid "Support"
+msgstr "پشتیبانی"
+
+#: App/Views/admin/documentation-page.php:48
+msgid "Changelog"
+msgstr "تاریخچه تغییرات"
+
+#: ninja-api.php:348
+msgid "Insufficient permissions"
+msgstr "مجوزهای ناکافی"

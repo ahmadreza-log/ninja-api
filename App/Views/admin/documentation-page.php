@@ -1,9 +1,9 @@
 <?php
 /**
- * صفحه مستندات API Explorer
+ * Documentation page view for API Explorer
  */
 
-// جلوگیری از دسترسی مستقیم
+// Prevent direct access
 if (!defined('ABSPATH')) {
     exit;
 }

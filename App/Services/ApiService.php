@@ -1,18 +1,15 @@
 <?php
 
 /**
- * Main service for working with APIs
+ * Service class for API operations
+ * Handles all REST API related functionality including route discovery, processing, and testing
  */
 class ApiService
 {
-    /**
-     * REST Server instance
-     * @var \WP_REST_Server
-     */
     private $RestServer;
     
     /**
-     * Class constructor
+     * Constructor
      */
     public function __construct()
     {
@@ -20,7 +17,7 @@ class ApiService
     }
     
     /**
-     * دریافت تمام route های ثبت شده
+     * Get all registered REST API routes
      * @return array
      */
     public function GetAllRegisteredRoutes()
@@ -36,7 +33,7 @@ class ApiService
     }
     
     /**
-     * پردازش داده‌های route
+     * Process route data and extract relevant information
      * @param string $RouteName
      * @param array $RouteData
      * @return array
@@ -55,24 +52,31 @@ class ApiService
             'namespace' => $this->ExtractNamespace($RouteName)
         ];
         
-        // پردازش methods
+        // Process HTTP methods
         if (isset($RouteData['methods'])) {
             foreach ($RouteData['methods'] as $Method => $MethodData) {
                 $ProcessedRoute['methods'][$Method] = $this->ProcessMethodData($Method, $MethodData);
             }
         }
         
-        // استخراج parameters از pattern
+        // Extract parameters from route pattern
         $ProcessedRoute['parameters'] = RouteHelper::ExtractParametersFromPattern($RouteName);
         
-        // تولید example URL
-        $ProcessedRoute['example_url'] = RouteHelper::GenerateExampleUrl($RouteName, $ProcessedRoute['namespace']);
+        // Generate example URL
+        // Extract route pattern by removing namespace from the beginning
+        $NamespacePrefix = $ProcessedRoute['namespace'] . '/';
+        if (strpos($RouteName, $NamespacePrefix) === 0) {
+            $RoutePattern = substr($RouteName, strlen($NamespacePrefix));
+        } else {
+            $RoutePattern = $RouteName;
+        }
+        $ProcessedRoute['example_url'] = RouteHelper::GenerateExampleUrl($RoutePattern, $ProcessedRoute['namespace']);
         
         return $ProcessedRoute;
     }
     
     /**
-     * پردازش داده‌های method
+     * Process method data for a specific HTTP method
      * @param string $Method
      * @param array $MethodData
      * @return array
@@ -84,25 +88,21 @@ class ApiService
             'callback' => $MethodData['callback'] ?? null,
             'permission_callback' => $MethodData['permission_callback'] ?? null,
             'args' => $MethodData['args'] ?? [],
-            'query_parameters' => [],
             'is_public' => false,
-            'description' => ''
+            'query_parameters' => []
         ];
         
-        // بررسی عمومی بودن method
-        $PermissionCallback = $MethodData['permission_callback'] ?? null;
-        $ProcessedMethod['is_public'] = ($PermissionCallback === '__return_true' || $PermissionCallback === null);
+        // Check if method is public
+        $ProcessedMethod['is_public'] = $this->IsMethodPublic($MethodData);
         
-        // استخراج query parameters
-        if (isset($MethodData['args']) && is_array($MethodData['args'])) {
-            $ProcessedMethod['query_parameters'] = RouteHelper::ExtractQueryParameters(['args' => $MethodData['args']]);
-        }
+        // Extract query parameters
+        $ProcessedMethod['query_parameters'] = RouteHelper::ExtractQueryParameters($MethodData);
         
         return $ProcessedMethod;
     }
     
     /**
-     * استخراج namespace از نام route
+     * Extract namespace from route name
      * @param string $RouteName
      * @return string
      */
@@ -118,7 +118,7 @@ class ApiService
     }
     
     /**
-     * دریافت جزئیات یک route خاص
+     * Get detailed information for a specific route
      * @param string $RouteName
      * @return array|null
      */
@@ -132,7 +132,7 @@ class ApiService
         
         $Route = $Routes[$RouteName];
         
-        // اضافه کردن اطلاعات بیشتر
+        // Add additional information
         $Route['full_details'] = $this->GetFullRouteDetails($RouteName);
         $Route['test_data'] = $this->GenerateTestData($Route);
         
@@ -140,7 +140,7 @@ class ApiService
     }
     
     /**
-     * دریافت جزئیات کامل route از WordPress
+     * Get full route details from WordPress REST server
      * @param string $RouteName
      * @return array
      */
@@ -156,7 +156,7 @@ class ApiService
     }
     
     /**
-     * تولید داده‌های تست برای route
+     * Generate test data for a route
      * @param array $Route
      * @return array
      */
@@ -173,12 +173,12 @@ class ApiService
             'parameters' => []
         ];
         
-        // تنظیم method پیش‌فرض
+        // Set default method based on available methods
         if (!empty($Route['methods'])) {
             $TestData['method'] = array_keys($Route['methods'])[0];
         }
         
-        // تولید body برای POST/PUT/PATCH
+        // Generate body for POST/PUT/PATCH requests
         if (in_array($TestData['method'], ['POST', 'PUT', 'PATCH'])) {
             $TestData['body'] = $this->GenerateRequestBody($Route);
         }
@@ -187,7 +187,7 @@ class ApiService
     }
     
     /**
-     * تولید request body
+     * Generate request body based on route parameters
      * @param array $Route
      * @return string
      */
@@ -195,7 +195,7 @@ class ApiService
     {
         $BodyData = [];
         
-        // استخراج query parameters برای تولید body
+        // Extract query parameters for generating body
         foreach ($Route['methods'] as $Method => $MethodData) {
             if (isset($MethodData['query_parameters'])) {
                 foreach ($MethodData['query_parameters'] as $Param) {
@@ -206,7 +206,7 @@ class ApiService
                     $ParamName = $Param['name'];
                     $ParamType = $Param['type'] ?? 'string';
                     
-                    // تولید مقدار مثال بر اساس نوع
+                    // Generate example value based on type
                     switch ($ParamType) {
                         case 'integer':
                             $BodyData[$ParamName] = 123;
@@ -234,7 +234,7 @@ class ApiService
     }
     
     /**
-     * گروه‌بندی routes بر اساس namespace
+     * Group routes by namespace
      * @return array
      */
     public function GetGroupedRoutes()
@@ -244,7 +244,7 @@ class ApiService
     }
     
     /**
-     * فیلتر کردن routes بر اساس معیارهای مختلف
+     * Filter routes based on various criteria
      * @param array $Filters
      * @return array
      */
@@ -252,28 +252,28 @@ class ApiService
     {
         $Routes = $this->GetAllRegisteredRoutes();
         
-        // فیلتر بر اساس namespace
+        // Filter by namespace
         if (!empty($Filters['namespace'])) {
             $Routes = array_filter($Routes, function($Route) use ($Filters) {
                 return $Route['namespace'] === $Filters['namespace'];
             });
         }
         
-        // فیلتر بر اساس method
+        // Filter by method
         if (!empty($Filters['method'])) {
             $Routes = array_filter($Routes, function($Route) use ($Filters) {
                 return isset($Route['methods'][$Filters['method']]);
             });
         }
         
-        // فیلتر بر اساس public/private
+        // Filter by public/private
         if (isset($Filters['public_only']) && $Filters['public_only']) {
             $Routes = array_filter($Routes, function($Route) {
                 return $Route['is_public'];
             });
         }
         
-        // فیلتر بر اساس جستجو
+        // Filter by search term
         if (!empty($Filters['search'])) {
             $SearchTerm = strtolower($Filters['search']);
             $Routes = array_filter($Routes, function($Route) use ($SearchTerm) {
@@ -286,7 +286,7 @@ class ApiService
     }
     
     /**
-     * دریافت آمار routes
+     * Get statistics about routes
      * @return array
      */
     public function GetRoutesStats()
@@ -297,28 +297,26 @@ class ApiService
             'public_routes' => 0,
             'private_routes' => 0,
             'methods_count' => [],
-            'namespaces_count' => [],
-            'total_endpoints' => 0
+            'namespaces_count' => []
         ];
         
         foreach ($Routes as $Route) {
-            // شمارش public/private
+            // Count public/private routes
             if ($Route['is_public']) {
                 $Stats['public_routes']++;
             } else {
                 $Stats['private_routes']++;
             }
             
-            // شمارش methods
+            // Count methods
             foreach ($Route['methods'] as $Method => $MethodData) {
                 if (!isset($Stats['methods_count'][$Method])) {
                     $Stats['methods_count'][$Method] = 0;
                 }
                 $Stats['methods_count'][$Method]++;
-                $Stats['total_endpoints']++;
             }
             
-            // شمارش namespaces
+            // Count namespaces
             $Namespace = $Route['namespace'];
             if (!isset($Stats['namespaces_count'][$Namespace])) {
                 $Stats['namespaces_count'][$Namespace] = 0;
@@ -330,7 +328,7 @@ class ApiService
     }
     
     /**
-     * تست یک endpoint
+     * Test an API endpoint
      * @param string $Url
      * @param string $Method
      * @param array $Headers
@@ -342,49 +340,91 @@ class ApiService
     {
         $StartTime = microtime(true);
         
+        // Prepare request arguments
         $Args = [
-            'method' => $Method,
+            'method' => strtoupper($Method),
             'timeout' => $Timeout,
-            'headers' => $Headers,
-            'body' => $Body,
-            'sslverify' => false
+            'headers' => array_merge([
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json'
+            ], $Headers)
         ];
         
-        $Response = wp_remote_request($Url, $Args);
-        $EndTime = microtime(true);
-        $ResponseTime = round(($EndTime - $StartTime) * 1000, 2);
+        // Add body for POST/PUT/PATCH requests
+        if (in_array(strtoupper($Method), ['POST', 'PUT', 'PATCH']) && !empty($Body)) {
+            $Args['body'] = $Body;
+        }
         
+        // Make the request
+        $Response = wp_remote_request($Url, $Args);
+        
+        $EndTime = microtime(true);
+        $ResponseTime = round(($EndTime - $StartTime) * 1000); // Convert to milliseconds
+        
+        // Process response
         if (is_wp_error($Response)) {
             return [
                 'success' => false,
-                'error' => $Response->get_error_message(),
+                'status_code' => 0,
                 'response_time' => $ResponseTime,
-                'status_code' => 0
+                'response_body' => $Response->get_error_message(),
+                'error' => true
             ];
         }
         
         $StatusCode = wp_remote_retrieve_response_code($Response);
         $ResponseBody = wp_remote_retrieve_body($Response);
-        $ResponseHeaders = wp_remote_retrieve_headers($Response);
+        
+        // Try to parse JSON response
+        $ParsedBody = $this->TryParseJson($ResponseBody);
         
         return [
-            'success' => true,
+            'success' => $StatusCode >= 200 && $StatusCode < 300,
             'status_code' => $StatusCode,
             'response_time' => $ResponseTime,
-            'headers' => $ResponseHeaders->getAll(),
-            'body' => $ResponseBody,
-            'json' => $this->TryParseJson($ResponseBody)
+            'response_body' => $ParsedBody,
+            'headers' => wp_remote_retrieve_headers($Response)
         ];
     }
     
     /**
-     * تلاش برای parse کردن JSON
-     * @param string $JsonString
-     * @return mixed|null
+     * Try to parse JSON response
+     * @param string $ResponseBody
+     * @return mixed
      */
-    private function TryParseJson($JsonString)
+    private function TryParseJson($ResponseBody)
     {
-        $Decoded = json_decode($JsonString, true);
-        return (json_last_error() === JSON_ERROR_NONE) ? $Decoded : null;
+        $Decoded = json_decode($ResponseBody, true);
+        
+        if (json_last_error() === JSON_ERROR_NONE) {
+            return $Decoded;
+        }
+        
+        return $ResponseBody;
+    }
+    
+    /**
+     * Check if a method is public
+     * @param array $MethodData
+     * @return bool
+     */
+    private function IsMethodPublic($MethodData)
+    {
+        if (isset($MethodData['permission_callback'])) {
+            $Callback = $MethodData['permission_callback'];
+            
+            // If permission_callback is '__return_true', it's public
+            if ($Callback === '__return_true' || 
+                (is_string($Callback) && $Callback === '__return_true')) {
+                return true;
+            }
+            
+            // If permission_callback is null, it's public
+            if ($Callback === null) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }

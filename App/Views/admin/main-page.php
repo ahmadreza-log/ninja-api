@@ -1,9 +1,9 @@
 <?php
 /**
- * صفحه اصلی API Explorer
+ * Main page view for API Explorer
  */
 
-// جلوگیری از دسترسی مستقیم
+// Prevent direct access
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -32,7 +32,7 @@ $ViewHelper = new ViewHelper();
     
     <!-- Tab Contents -->
     <div class="tab-content" id="routes-content">
-        <!-- آمار کلی -->
+        <!-- Overall Statistics -->
         <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-number"><?php echo esc_html($stats['total_routes'] ?? 0); ?></div>
@@ -52,7 +52,7 @@ $ViewHelper = new ViewHelper();
         </div>
     </div>
 
-    <!-- فیلترها -->
+    <!-- Filters -->
     <div class="filters-section">
         <div class="filter-row">
             <div class="filter-group">
@@ -98,14 +98,14 @@ $ViewHelper = new ViewHelper();
         </div>
     </div>
 
-    <!-- نمایش routes -->
+    <!-- Display Routes -->
     <div class="routes-container">
         <?php if (!empty($grouped_routes)): ?>
             <?php foreach ($grouped_routes as $namespace => $namespace_data): ?>
                 <div class="namespace-section" data-namespace="<?php echo esc_attr($namespace); ?>">
                     <div class="namespace-header">
                         <h2 class="namespace-title">
-                            <span class="dashicons dashicons-folder"></span>
+                            <span class="dashicons dashicons-open-folder"></span>
                             <?php echo esc_html($namespace); ?>
                             <span class="route-count">(<?php echo count($namespace_data['routes']); ?> routes)</span>
                         </h2>
@@ -207,331 +207,10 @@ $ViewHelper = new ViewHelper();
         <?php endif; ?>
     </div>
 
-    <!-- Modal برای تست API -->
-    <div id="api-test-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><?php _e('Test API Endpoint', 'ninja-api-explorer'); ?></h3>
-                <button type="button" class="modal-close">&times;</button>
-            </div>
-            
-            <div class="modal-body">
-                <form id="api-test-form">
-                    <div class="form-group">
-                        <label for="test-url"><?php _e('URL:', 'ninja-api-explorer'); ?></label>
-                        <input type="url" id="test-url" name="url" required class="form-control">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="test-method"><?php _e('Method:', 'ninja-api-explorer'); ?></label>
-                        <select id="test-method" name="method" class="form-control">
-                            <option value="GET">GET</option>
-                            <option value="POST">POST</option>
-                            <option value="PUT">PUT</option>
-                            <option value="PATCH">PATCH</option>
-                            <option value="DELETE">DELETE</option>
-                            <option value="OPTIONS">OPTIONS</option>
-                            <option value="HEAD">HEAD</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group" id="headers-group">
-                        <label><?php _e('Headers:', 'ninja-api-explorer'); ?></label>
-                        <div id="headers-container">
-                            <div class="header-row">
-                                <input type="text" name="header_key[]" placeholder="<?php _e('Header Name', 'ninja-api-explorer'); ?>" class="form-control">
-                                <input type="text" name="header_value[]" placeholder="<?php _e('Header Value', 'ninja-api-explorer'); ?>" class="form-control">
-                                <button type="button" class="button remove-header"><?php _e('Remove', 'ninja-api-explorer'); ?></button>
-                            </div>
-                        </div>
-                        <button type="button" id="add-header" class="button button-small">
-                            <?php _e('Add Header', 'ninja-api-explorer'); ?>
-                        </button>
-                    </div>
-                    
-                    <div class="form-group" id="body-group" style="display: none;">
-                        <label for="test-body"><?php _e('Request Body:', 'ninja-api-explorer'); ?></label>
-                        <textarea id="test-body" name="body" rows="10" class="form-control" 
-                                  placeholder='{"key": "value"}'></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="test-timeout"><?php _e('Timeout (seconds):', 'ninja-api-explorer'); ?></label>
-                        <input type="number" id="test-timeout" name="timeout" value="30" min="1" max="300" class="form-control">
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="submit" class="button button-primary">
-                            <?php _e('Send Request', 'ninja-api-explorer'); ?>
-                        </button>
-                        <button type="button" class="button modal-close">
-                            <?php _e('Cancel', 'ninja-api-explorer'); ?>
-                        </button>
-                    </div>
-                </form>
-                
-                <div id="test-response" style="display: none;">
-                    <h4><?php _e('Response:', 'ninja-api-explorer'); ?></h4>
-                    <div class="response-info">
-                        <span class="status-code"></span>
-                        <span class="response-time"></span>
-                    </div>
-                    <pre class="response-body"></pre>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal برای جزئیات Route -->
-    <div id="route-details-modal" class="modal" style="display: none;">
-        <div class="modal-content large">
-            <div class="modal-header">
-                <h3 id="route-details-title"><?php _e('Route Details', 'ninja-api-explorer'); ?></h3>
-                <button type="button" class="modal-close">&times;</button>
-            </div>
-            
-            <div class="modal-body" id="route-details-content">
-                <!-- محتوا از طریق AJAX بارگذاری می‌شود -->
-            </div>
-        </div>
-    </div>
+    <!-- Modals are created dynamically by JavaScript -->
 </div>
 
-<script>
-jQuery(document).ready(function($) {
-    // فیلترها
-    $('#namespace-filter, #method-filter, #public-only-filter, #search-filter').on('change input', function() {
-        filterRoutes();
-    });
-    
-    // پاک کردن فیلترها
-    $('#clear-filters').on('click', function() {
-        $('#namespace-filter, #method-filter').val('');
-        $('#public-only-filter').prop('checked', false);
-        $('#search-filter').val('');
-        filterRoutes();
-    });
-    
-    // تابع فیلتر کردن routes
-    function filterRoutes() {
-        var namespace = $('#namespace-filter').val();
-        var method = $('#method-filter').val();
-        var publicOnly = $('#public-only-filter').is(':checked');
-        var search = $('#search-filter').val().toLowerCase();
-        
-        $('.route-card').each(function() {
-            var $card = $(this);
-            var cardNamespace = $card.closest('.namespace-section').data('namespace');
-            var cardMethods = $card.data('methods').toLowerCase();
-            var cardPublic = $card.data('public');
-            var cardPath = $card.find('.route-path').text().toLowerCase();
-            var cardDescription = $card.find('.route-description').text().toLowerCase();
-            
-            var show = true;
-            
-            if (namespace && cardNamespace !== namespace) {
-                show = false;
-            }
-            
-            if (method && !cardMethods.includes(method.toLowerCase())) {
-                show = false;
-            }
-            
-            if (publicOnly && !cardPublic) {
-                show = false;
-            }
-            
-            if (search && !cardPath.includes(search) && !cardDescription.includes(search)) {
-                show = false;
-            }
-            
-            $card.toggle(show);
-        });
-        
-        // مخفی کردن namespace های خالی
-        $('.namespace-section').each(function() {
-            var $section = $(this);
-            var visibleRoutes = $section.find('.route-card:visible').length;
-            $section.toggle(visibleRoutes > 0);
-        });
-    }
-    
-    // باز/بسته کردن namespace ها
-    $('.toggle-namespace').on('click', function() {
-        var target = $(this).data('target');
-        var $routes = $('#routes-' + target);
-        var $icon = $(this).find('.dashicons');
-        
-        $routes.slideToggle();
-        $icon.toggleClass('dashicons-arrow-down-alt2 dashicons-arrow-up-alt2');
-    });
-    
-    // نمایش جزئیات route
-    $('.view-details').on('click', function() {
-        var route = $(this).data('route');
-        showRouteDetails(route);
-    });
-    
-    // تست endpoint
-    $('.test-endpoint').on('click', function() {
-        var route = $(this).data('route');
-        showApiTestModal(route);
-    });
-    
-    // کپی کردن URL
-    $('.copy-url').on('click', function() {
-        var url = $(this).data('url');
-        navigator.clipboard.writeText(url).then(function() {
-            alert('<?php _e('URL copied to clipboard!', 'ninja-api-explorer'); ?>');
-        });
-    });
-    
-    // نمایش modal تست API
-    function showApiTestModal(route) {
-        $('#test-url').val('<?php echo rest_url(); ?>' + route);
-        $('#api-test-modal').show();
-    }
-    
-    // بستن modal ها
-    $('.modal-close').on('click', function() {
-        $(this).closest('.modal').hide();
-    });
-    
-    // خارج شدن از modal با کلیک روی پس‌زمینه
-    $('.modal').on('click', function(e) {
-        if (e.target === this) {
-            $(this).hide();
-        }
-    });
-    
-    // تغییر method برای نمایش/مخفی کردن body
-    $('#test-method').on('change', function() {
-        var method = $(this).val();
-        if (['POST', 'PUT', 'PATCH'].includes(method)) {
-            $('#body-group').show();
-        } else {
-            $('#body-group').hide();
-        }
-    });
-    
-    // اضافه کردن header جدید
-    $('#add-header').on('click', function() {
-        var headerRow = '<div class="header-row">' +
-            '<input type="text" name="header_key[]" placeholder="<?php _e('Header Name', 'ninja-api-explorer'); ?>" class="form-control">' +
-            '<input type="text" name="header_value[]" placeholder="<?php _e('Header Value', 'ninja-api-explorer'); ?>" class="form-control">' +
-            '<button type="button" class="button remove-header"><?php _e('Remove', 'ninja-api-explorer'); ?></button>' +
-            '</div>';
-        $('#headers-container').append(headerRow);
-    });
-    
-    // حذف header
-    $(document).on('click', '.remove-header', function() {
-        $(this).closest('.header-row').remove();
-    });
-    
-    // ارسال درخواست تست
-    $('#api-test-form').on('submit', function(e) {
-        e.preventDefault();
-        
-        var formData = new FormData(this);
-        var headers = {};
-        
-        // جمع‌آوری headers
-        $('input[name="header_key[]"]').each(function(index) {
-            var key = $(this).val();
-            var value = $('input[name="header_value[]"]').eq(index).val();
-            if (key && value) {
-                headers[key] = value;
-            }
-        });
-        
-        formData.append('action', 'ninja_api_test_endpoint');
-        formData.append('nonce', ninjaApiExplorer.nonce);
-        formData.append('headers', JSON.stringify(headers));
-        
-        $.ajax({
-            url: ninjaApiExplorer.ajaxUrl,
-            method: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            beforeSend: function() {
-                $('#test-response').hide();
-                $('#api-test-form button[type="submit"]').prop('disabled', true).text('<?php _e('Sending...', 'ninja-api-explorer'); ?>');
-            },
-            success: function(response) {
-                if (response.success) {
-                    displayTestResponse(response.data);
-                } else {
-                    alert('<?php _e('Error:', 'ninja-api-explorer'); ?> ' + response.data.message);
-                }
-            },
-            error: function() {
-                alert('<?php _e('Request failed', 'ninja-api-explorer'); ?>');
-            },
-            complete: function() {
-                $('#api-test-form button[type="submit"]').prop('disabled', false).text('<?php _e('Send Request', 'ninja-api-explorer'); ?>');
-            }
-        });
-    });
-    
-    // نمایش پاسخ تست
-    function displayTestResponse(data) {
-        var $response = $('#test-response');
-        var $statusCode = $response.find('.status-code');
-        var $responseTime = $response.find('.response-time');
-        var $responseBody = $response.find('.response-body');
-        
-        $statusCode.text('Status: ' + data.status_code).removeClass().addClass('status-code status-' + getStatusClass(data.status_code));
-        $responseTime.text('Response Time: ' + data.response_time + 'ms');
-        
-        try {
-            var jsonResponse = JSON.parse(data.body);
-            $responseBody.text(JSON.stringify(jsonResponse, null, 2));
-        } catch (e) {
-            $responseBody.text(data.body);
-        }
-        
-        $response.show();
-    }
-    
-    // دریافت کلاس وضعیت
-    function getStatusClass(statusCode) {
-        if (statusCode >= 200 && statusCode < 300) return 'success';
-        if (statusCode >= 300 && statusCode < 400) return 'info';
-        if (statusCode >= 400 && statusCode < 500) return 'warning';
-        return 'danger';
-    }
-    
-    // نمایش جزئیات route
-    function showRouteDetails(route) {
-        $.ajax({
-            url: ninjaApiExplorer.ajaxUrl,
-            method: 'POST',
-            data: {
-                action: 'ninja_api_get_route_details',
-                nonce: ninjaApiExplorer.nonce,
-                route_name: route
-            },
-            beforeSend: function() {
-                $('#route-details-content').html('<p><?php _e('Loading...', 'ninja-api-explorer'); ?></p>');
-                $('#route-details-modal').show();
-            },
-            success: function(response) {
-                if (response.success) {
-                    $('#route-details-title').text('Route: ' + route);
-                    $('#route-details-content').html(response.data.html || 'No details available');
-                } else {
-                    $('#route-details-content').html('<p><?php _e('Error loading route details', 'ninja-api-explorer'); ?></p>');
-                }
-            },
-            error: function() {
-                $('#route-details-content').html('<p><?php _e('Error loading route details', 'ninja-api-explorer'); ?></p>');
-            }
-        });
-    }
-});
-</script>
+<!-- JavaScript functionality is handled by admin.js -->
 
     </div> <!-- End routes-content -->
     

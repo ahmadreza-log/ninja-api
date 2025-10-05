@@ -1,0 +1,38 @@
+{
+  "fa_IR": {
+    "Route name not found": "نام مسیر یافت نشد",
+    "Failed to load route details": "بارگذاری جزئیات مسیر ناموفق بود",
+    "Network error occurred while loading route details": "خطای شبکه در حین بارگذاری جزئیات مسیر رخ داد",
+    "Route data not found": "داده مسیر یافت نشد",
+    "URL not found": "URL یافت نشد",
+    "URL copied to clipboard!": "URL به کلیپ‌بورد کپی شد!",
+    "Failed to copy URL": "کپی URL ناموفق بود",
+    "No text to copy": "متنی برای کپی وجود ندارد",
+    "Copied to clipboard!": "به کلیپ‌بورد کپی شد!",
+    "Failed to copy": "کپی ناموفق بود",
+    "No route data available": "داده مسیر موجود نیست",
+    "URL is required": "URL الزامی است",
+    "Please enter a valid URL starting with http": "لطفاً یک URL معتبر که با http شروع می‌شود وارد کنید",
+    "Test completed successfully!": "تست با موفقیت انجام شد!",
+    "Test failed: %s": "تست ناموفق بود: %s",
+    "Network error occurred": "خطای شبکه رخ داد"
+  },
+  "en_US": {
+    "Route name not found": "Route name not found",
+    "Failed to load route details": "Failed to load route details",
+    "Network error occurred while loading route details": "Network error occurred while loading route details",
+    "Route data not found": "Route data not found",
+    "URL not found": "URL not found",
+    "URL copied to clipboard!": "URL copied to clipboard!",
+    "Failed to copy URL": "Failed to copy URL",
+    "No text to copy": "No text to copy",
+    "Copied to clipboard!": "Copied to clipboard!",
+    "Failed to copy": "Failed to copy",
+    "No route data available": "No route data available",
+    "URL is required": "URL is required",
+    "Please enter a valid URL starting with http": "Please enter a valid URL starting with http",
+    "Test completed successfully!": "Test completed successfully!",
+    "Test failed: %s": "Test failed: %s",
+    "Network error occurred": "Network error occurred"
+  }
+}

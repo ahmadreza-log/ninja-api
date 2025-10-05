@@ -1,0 +1,401 @@
+# Copyright (C) 2024 Ninja API Explorer Contributors
+# This file is distributed under the same license as the Ninja API Explorer package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Ninja API Explorer 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ninja-api-explorer\n"
+"POT-Creation-Date: 2024-01-05 12:00+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2024-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: ninja-api.php:45
+msgid "Ninja API Explorer"
+msgstr ""
+
+#: ninja-api.php:46
+msgid "A powerful WordPress plugin that provides a Swagger-like interface for exploring and testing WordPress REST APIs."
+msgstr ""
+
+#: ninja-api.php:47
+msgid "Explore, test, and document your WordPress REST API endpoints with ease."
+msgstr ""
+
+#: App/Views/admin/main-page.php:39
+msgid "Total Routes"
+msgstr ""
+
+#: App/Views/admin/main-page.php:43
+msgid "Public Routes"
+msgstr ""
+
+#: App/Views/admin/main-page.php:47
+msgid "Total Endpoints"
+msgstr ""
+
+#: App/Views/admin/main-page.php:51
+msgid "Namespaces"
+msgstr ""
+
+#: App/Views/admin/main-page.php:59
+msgid "Namespace:"
+msgstr ""
+
+#: App/Views/admin/main-page.php:74
+msgid "Method:"
+msgstr ""
+
+#: App/Views/admin/main-page.php:85
+msgid "Public Only"
+msgstr ""
+
+#: App/Views/admin/main-page.php:91
+msgid "Search Routes"
+msgstr ""
+
+#: App/Views/admin/main-page.php:95
+msgid "Clear Filters"
+msgstr ""
+
+#: App/Views/admin/main-page.php:104
+msgid "All Routes"
+msgstr ""
+
+#: App/Views/admin/main-page.php:108
+msgid "Grouped Routes"
+msgstr ""
+
+#: App/Views/admin/main-page.php:112
+msgid "API Tester"
+msgstr ""
+
+#: App/Views/admin/main-page.php:119
+msgid "Routes by Namespace"
+msgstr ""
+
+#: App/Views/admin/main-page.php:125
+msgid "routes"
+msgstr ""
+
+#: App/Views/admin/main-page.php:141
+msgid "Details"
+msgstr ""
+
+#: App/Views/admin/main-page.php:145
+msgid "Test"
+msgstr ""
+
+#: App/Views/admin/main-page.php:151
+msgid "Copy URL"
+msgstr ""
+
+#: App/Views/admin/main-page.php:158
+msgid "Path Parameters:"
+msgstr ""
+
+#: App/Views/admin/main-page.php:164
+msgid "Query Parameters:"
+msgstr ""
+
+#: App/Views/admin/main-page.php:170
+msgid "Example Request:"
+msgstr ""
+
+#: App/Views/admin/main-page.php:176
+msgid "Example Response:"
+msgstr ""
+
+#: App/Views/admin/main-page.php:182
+msgid "Test API Endpoint"
+msgstr ""
+
+#: App/Views/admin/main-page-page.php:186
+msgid "URL:"
+msgstr ""
+
+#: App/Views/admin/main-page.php:190
+msgid "Method:"
+msgstr ""
+
+#: App/Views/admin/main-page.php:200
+msgid "Headers:"
+msgstr ""
+
+#: App/Views/admin/main-page.php:204
+msgid "Header Name"
+msgstr ""
+
+#: App/Views/admin/main-page.php:208
+msgid "Header Value"
+msgstr ""
+
+#: App/Views/admin/main-page.php:212
+msgid "Remove"
+msgstr ""
+
+#: App/Views/admin/main-page.php:216
+msgid "Add Header"
+msgstr ""
+
+#: App/Views/admin/main-page.php:222
+msgid "Request Body:"
+msgstr ""
+
+#: App/Views/admin/main-page.php:230
+msgid "Timeout (seconds):"
+msgstr ""
+
+#: App/Views/admin/main-page.php:236
+msgid "Send Request"
+msgstr ""
+
+#: App/Views/admin/main-page.php:240
+msgid "Cancel"
+msgstr ""
+
+#: App/Views/admin/main-page.php:247
+msgid "Response:"
+msgstr ""
+
+#: App/Views/admin/main-page.php:254
+msgid "No routes found."
+msgstr ""
+
+#: App/Views/admin/main-page.php:258
+msgid "No routes found"
+msgstr ""
+
+#: App/Views/admin/main-page.php:262
+msgid "No API routes are currently registered."
+msgstr ""
+
+#: App/Helpers/RouteHelper.php:47
+msgid "Parameter: %s"
+msgstr ""
+
+#: App/Helpers/ViewHelper.php:120
+msgid "seconds"
+msgstr ""
+
+#: App/Helpers/ViewHelper.php:123
+msgid "minutes"
+msgstr ""
+
+#: App/Helpers/ViewHelper.php:126
+msgid "hours"
+msgstr ""
+
+#: App/Models/ApiEndpointModel.php:506
+msgid "Execute %s request to %s endpoint"
+msgstr ""
+
+#: assets/js/admin.js:242
+msgid "Route name not found"
+msgstr ""
+
+#: assets/js/admin.js:246
+msgid "Failed to load route details"
+msgstr ""
+
+#: assets/js/admin.js:250
+msgid "Network error occurred while loading route details"
+msgstr ""
+
+#: assets/js/admin.js:258
+msgid "Route data not found"
+msgstr ""
+
+#: assets/js/admin.js:262
+msgid "URL not found"
+msgstr ""
+
+#: assets/js/admin.js:266
+msgid "URL copied to clipboard!"
+msgstr ""
+
+#: assets/js/admin.js:270
+msgid "Failed to copy URL"
+msgstr ""
+
+#: assets/js/admin.js:278
+msgid "No text to copy"
+msgstr ""
+
+#: assets/js/admin.js:282
+msgid "Copied to clipboard!"
+msgstr ""
+
+#: assets/js/admin.js:286
+msgid "Failed to copy"
+msgstr ""
+
+#: assets/js/admin.js:294
+msgid "No route data available"
+msgstr ""
+
+#: assets/js/admin.js:400
+msgid "URL is required"
+msgstr ""
+
+#: assets/js/admin.js:404
+msgid "Please enter a valid URL starting with http"
+msgstr ""
+
+#: assets/js/admin.js:450
+msgid "Test completed successfully!"
+msgstr ""
+
+#: assets/js/admin.js:454
+msgid "Test failed: %s"
+msgstr ""
+
+#: assets/js/admin.js:464
+msgid "Network error occurred"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:20
+msgid "Settings"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:24
+msgid "General Settings"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:28
+msgid "Enable API Testing"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:32
+msgid "Allow users to test API endpoints directly from the interface"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:36
+msgid "Default Timeout"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:40
+msgid "Default timeout for API requests in seconds"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:44
+msgid "Enable Request Logging"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:48
+msgid "Log all API test requests for debugging purposes"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:52
+msgid "Max Log Entries"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:56
+msgid "Maximum number of log entries to keep"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:60
+msgid "Display Settings"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:64
+msgid "Routes Per Page"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:68
+msgid "Number of routes to display per page"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:72
+msgid "Show Public Routes Only"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:76
+msgid "Show only publicly accessible routes by default"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:80
+msgid "Security Settings"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:84
+msgid "Require Authentication"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:88
+msgid "Require user authentication to access the API Explorer"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:92
+msgid "Allowed User Roles"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:96
+msgid "Select which user roles can access the API Explorer"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:100
+msgid "Save Settings"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:104
+msgid "Reset to Defaults"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:108
+msgid "Export Settings"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:112
+msgid "Import Settings"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:116
+msgid "Settings saved successfully!"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:120
+msgid "Settings reset to defaults!"
+msgstr ""
+
+#: App/Views/admin/settings-page.php:124
+msgid "Invalid settings file format"
+msgstr ""
+
+#: App/Views/admin/documentation-page.php:20
+msgid "Documentation"
+msgstr ""
+
+#: App/Views/admin/documentation-page.php:24
+msgid "API Explorer Documentation"
+msgstr ""
+
+#: App/Views/admin/documentation-page.php:28
+msgid "Getting Started"
+msgstr ""
+
+#: App/Views/admin/documentation-page.php:32
+msgid "How to Use"
+msgstr ""
+
+#: App/Views/admin/documentation-page.php:36
+msgid "Features"
+msgstr ""
+
+#: App/Views/admin/documentation-page.php:40
+msgid "Troubleshooting"
+msgstr ""
+
+#: App/Views/admin/documentation-page.php:44
+msgid "Support"
+msgstr ""
+
+#: App/Views/admin/documentation-page.php:48
+msgid "Changelog"
+msgstr ""
+
+#: ninja-api.php:348
+msgid "Insufficient permissions"
+msgstr ""
