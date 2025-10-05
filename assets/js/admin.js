@@ -359,7 +359,26 @@
             return;
         }
         
-        ShowApiTestModal(RouteData);
+        // Try to parse the route data first
+        let ParsedRouteData;
+        if (typeof RouteData === 'string') {
+            try {
+                ParsedRouteData = JSON.parse(RouteData);
+                console.log('Route data parsed successfully:', ParsedRouteData);
+            } catch (e) {
+                console.error('Failed to parse route data, using fallback:', e);
+                // Fallback: create minimal route data
+                ParsedRouteData = {
+                    name: RouteData,
+                    methods: ['GET'], // Default to GET
+                    example_url: ninjaApiExplorer.restUrl + RouteData
+                };
+            }
+        } else {
+            ParsedRouteData = RouteData;
+        }
+        
+        ShowApiTestModal(ParsedRouteData);
     }
     
     /**
@@ -509,15 +528,8 @@
      * Creates and displays a modal for testing API endpoints
      */
     function ShowApiTestModal(RouteData) {
-        // Parse route data if it's a string
-        let ParsedRouteData = RouteData;
-        if (typeof RouteData === 'string') {
-            try {
-                ParsedRouteData = JSON.parse(RouteData);
-            } catch (e) {
-                ParsedRouteData = { example_url: RouteData };
-            }
-        }
+        // RouteData is already parsed by HandleTestEndpoint
+        const ParsedRouteData = RouteData;
         
         // Build full URL for testing
         let FullUrl = ninjaApiExplorer.restUrl;
@@ -593,7 +605,7 @@
         
         // Set default method (prefer GET, then first available method)
         const $MethodSelect = Modal.find('#test-method');
-        const MethodOptions = $MethodSelect.find('option').map(function() {
+            const MethodOptions = $MethodSelect.find('option').map(function() {
             return $(this).val();
         }).get();
         
@@ -736,16 +748,23 @@
         
         let AvailableMethods = DefaultMethods;
         
+        // Debug log to see what we're receiving
+        console.log('GenerateMethodOptions - RouteData:', RouteData);
+        
         // Check if route data has methods information
         if (RouteData && RouteData.methods) {
+            console.log('GenerateMethodOptions - RouteData.methods:', RouteData.methods);
+            
             if (Array.isArray(RouteData.methods)) {
                 // If methods is an array of strings
                 AvailableMethods = RouteData.methods.map(method => method.toUpperCase());
-            } else if (typeof RouteData.methods === 'object') {
+            } else if (typeof RouteData.methods === 'object' && RouteData.methods !== null) {
                 // If methods is an object with method names as keys
                 AvailableMethods = Object.keys(RouteData.methods).map(method => method.toUpperCase());
             }
         }
+        
+        console.log('GenerateMethodOptions - AvailableMethods:', AvailableMethods);
         
         // Generate HTML options
         let MethodOptions = '';

@@ -40,6 +40,8 @@ class ApiService
      */
     private function ProcessRouteData($RouteName, $RouteData)
     {
+        // Debug logs removed for production
+        
         $ProcessedRoute = [
             'name' => $RouteName,
             'pattern' => $RouteName,
@@ -52,11 +54,23 @@ class ApiService
             'namespace' => $this->ExtractNamespace($RouteName)
         ];
         
-        // Process HTTP methods
-        if (isset($RouteData['methods'])) {
-            foreach ($RouteData['methods'] as $Method => $MethodData) {
-                $ProcessedRoute['methods'][$Method] = $this->ProcessMethodData($Method, $MethodData);
+        // Process HTTP methods - WordPress REST API stores methods in endpoints array
+        if (is_array($RouteData)) {
+            foreach ($RouteData as $Endpoint) {
+                if (isset($Endpoint['methods']) && is_array($Endpoint['methods'])) {
+                    foreach ($Endpoint['methods'] as $Method) {
+                        $ProcessedRoute['methods'][$Method] = [
+                            'name' => $Method,
+                            'description' => $this->GetMethodDescription($Method)
+                        ];
+                    }
+                }
             }
+        }
+        
+        // If no methods found, add default methods
+        if (empty($ProcessedRoute['methods'])) {
+            $ProcessedRoute['methods'] = $this->GetDefaultMethodsForRoute($RouteName);
         }
         
         // Extract parameters from route pattern
@@ -340,6 +354,8 @@ class ApiService
     {
         $StartTime = microtime(true);
         
+        // Debug logs removed for production
+        
         // Prepare request arguments
         $Args = [
             'method' => strtoupper($Method),
@@ -426,5 +442,74 @@ class ApiService
         }
         
         return false;
+    }
+    
+    /**
+     * Extract methods from WordPress REST API callbacks
+     * @param array $RouteData
+     * @return array
+     */
+    private function ExtractMethodsFromCallbacks($RouteData)
+    {
+        $Methods = [];
+        
+        // WordPress REST API stores methods in the endpoint callbacks
+        if (isset($RouteData) && is_array($RouteData)) {
+            foreach ($RouteData as $Endpoint) {
+                if (isset($Endpoint['methods']) && is_array($Endpoint['methods'])) {
+                    foreach ($Endpoint['methods'] as $Method) {
+                        $Methods[$Method] = [
+                            'name' => $Method,
+                            'description' => $this->GetMethodDescription($Method)
+                        ];
+                    }
+                }
+            }
+        }
+        
+        return $Methods;
+    }
+    
+    /**
+     * Get default methods for a route based on its name
+     * @param string $RouteName
+     * @return array
+     */
+    private function GetDefaultMethodsForRoute($RouteName)
+    {
+        $Methods = [];
+        
+        // Common WordPress REST API methods
+        $CommonMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'];
+        
+        // Add methods based on route patterns
+        foreach ($CommonMethods as $Method) {
+            $Methods[$Method] = [
+                'name' => $Method,
+                'description' => $this->GetMethodDescription($Method)
+            ];
+        }
+        
+        return $Methods;
+    }
+    
+    /**
+     * Get description for HTTP method
+     * @param string $Method
+     * @return string
+     */
+    private function GetMethodDescription($Method)
+    {
+        $Descriptions = [
+            'GET' => 'Retrieve data',
+            'POST' => 'Create new data',
+            'PUT' => 'Update existing data',
+            'PATCH' => 'Partially update data',
+            'DELETE' => 'Delete data',
+            'OPTIONS' => 'Get available options',
+            'HEAD' => 'Get headers only'
+        ];
+        
+        return $Descriptions[$Method] ?? 'HTTP ' . $Method . ' method';
     }
 }

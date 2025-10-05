@@ -136,7 +136,7 @@ $ViewHelper = new ViewHelper();
                                             <?php _e('Details', 'ninja-api-explorer'); ?>
                                         </button>
                                         <button type="button" class="button button-small test-endpoint" 
-                                                data-route="<?php echo esc_attr($route_name); ?>">
+                                                data-route="<?php echo esc_attr(json_encode($route_data, JSON_HEX_APOS | JSON_HEX_QUOT)); ?>">
                                             <?php _e('Test', 'ninja-api-explorer'); ?>
                                         </button>
                                         <button type="button" class="button button-small copy-url" 
