@@ -593,14 +593,14 @@
         
         // Set default method (prefer GET, then first available method)
         const $MethodSelect = Modal.find('#test-method');
-        const AvailableMethods = $MethodSelect.find('option').map(function() {
+        const MethodOptions = $MethodSelect.find('option').map(function() {
             return $(this).val();
         }).get();
         
-        if (AvailableMethods.includes('GET')) {
+        if (MethodOptions.includes('GET')) {
             $MethodSelect.val('GET');
-        } else if (AvailableMethods.length > 0) {
-            $MethodSelect.val(AvailableMethods[0]);
+        } else if (MethodOptions.length > 0) {
+            $MethodSelect.val(MethodOptions[0]);
         }
         
         // Show/hide body field based on method
